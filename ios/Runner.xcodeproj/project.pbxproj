@@ -106,7 +106,6 @@
 				F77B6F9516292B6B4384272B /* Pods-RunnerTests.release.xcconfig */,
 				AAF0B086BDEA863C6FA745E1 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -406,8 +405,10 @@
 			children = (
 				97C147001CF9000F007C117D /* Base */,
 			);
+			indentWidth = 4;
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 /* End PBXVariantGroup section */
 
