@@ -10,13 +10,6 @@
             "flutterMode": "debug",
             "type": "dart",
             "program": "lib/main.dart",
-            "args": [
-                "--flavor",
-                "dev",
-                "--target",
-                "lib/main.dart"
-            ],
         },
-       
     ]
 }

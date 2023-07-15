@@ -17,7 +17,7 @@ class OkePointApp extends ConsumerWidget {
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.space): const ActivateIntent(),
       },
-      title: 'òkè point',
+      title: 'Òkè point',
       builder: (context, widget) => Overlay(
         initialEntries: [
           OverlayEntry(
