@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:okepoint/UI/screens/share_location/share_location_view.dart';
 import 'package:okepoint/constants/app_routes.dart';
-import '../../UI/screens/authentication/authentication_view.dart';
+
 import '../../UI/screens/profile/user_profile.dart';
 import '../../UI/screens/tab_wrapper/tab_wrapper.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final navigationServiceProvider = Provider<NavigationService>((ref) {
   return NavigationService(ref);
@@ -23,7 +24,7 @@ class NavigationService {
   GoRouter get router {
     return GoRouter(
       navigatorKey: mainNavigatorKey,
-      initialLocation: AppRoutes.share_location.path,
+      initialLocation: getInitialPath().path,
       routes: [
         StatefulShellRoute.indexedStack(
           parentNavigatorKey: mainNavigatorKey,
@@ -61,21 +62,16 @@ class NavigationService {
                     );
                   },
                 ),
-                GoRoute(
-                  name: AppRoutes.auth.name,
-                  path: AppRoutes.auth.path,
-                  pageBuilder: (context, state) {
-                    return const NoTransitionPage(
-                      child: AuthenticationView(),
-                    );
-                  },
-                ),
               ],
             )
           ],
         ),
       ],
     );
+  }
+
+  AppRoutes getInitialPath() {
+    return AppRoutes.share_location;
   }
 }
 
