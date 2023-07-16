@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class HomeViewWiget extends StatelessWidget {
-  const HomeViewWiget({super.key});
+class ShareLocationViewWidget extends StatelessWidget {
+  const ShareLocationViewWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

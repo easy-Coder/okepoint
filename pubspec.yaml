@@ -28,6 +28,9 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.2
 
+  # local storage
+  shared_preferences: ^2.2.0
+
 
 dev_dependencies:
   flutter_test:
@@ -38,8 +41,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/
+    - assets/icons/
 
   # fonts:
   #   - family: Schyler
