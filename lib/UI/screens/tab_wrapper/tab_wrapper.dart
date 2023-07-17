@@ -18,12 +18,10 @@ class TabWrapper extends ConsumerWidget {
           unselectedFontSize: 0,
           iconSize: 30,
           type: BottomNavigationBarType.fixed,
-          onTap: (value) {
-            navigationShell.goBranch(
-              value,
-              initialLocation: value == navigationShell.currentIndex,
-            );
-          },
+          onTap: (value) => navigationShell.goBranch(
+            value,
+            initialLocation: value == navigationShell.currentIndex,
+          ),
           items: navigationShell.route.branches.map(
             (branch) {
               final path = branch.initialLocation!;
