@@ -14,12 +14,14 @@ final appThemeProvider = Provider<AppTheme>((ref) {
 class AppTheme {
   final Ref ref;
 
-  AppTheme(this.ref);
+  AppTheme(this.ref) {
+    // setThemeFromLocalStorage();
+  }
 
   LocalStorageService get storageService => ref.read(localStorageProvider);
   String? theme;
 
-  ValueNotifier<ThemeData> themeDataNotifier = ValueNotifier<ThemeData>(AppThemeData.themeLight);
+  ValueNotifier<ThemeData> themeDataNotifier = ValueNotifier<ThemeData>(AppThemeData.themeDark);
   bool isLightMode(BuildContext context) => Theme.of(context).brightness == Brightness.light;
 
   void setThemeFromLocalStorage() async {

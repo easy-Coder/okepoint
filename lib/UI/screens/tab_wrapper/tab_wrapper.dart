@@ -43,7 +43,7 @@ class TabWrapper extends ConsumerWidget {
 
     switch (route) {
       case AppRoutes.profile:
-        return CupertinoIcons.profile_circled;
+        return CupertinoIcons.person_alt_circle_fill;
       default:
         return CupertinoIcons.map_fill;
     }

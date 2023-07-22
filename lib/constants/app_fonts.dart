@@ -3,5 +3,5 @@
 class AppFonts {
   const AppFonts._();
 
-  static const DINRoundPro = "";
+  static const SFPro = "SF-Pro";
 }

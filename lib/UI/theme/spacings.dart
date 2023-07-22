@@ -3,16 +3,16 @@ import 'colors.dart';
 
 class AppSpacings {
   AppSpacings._();
-  static const double cardPadding = 24;
+  static const double cardPadding = 20;
   static const double webWidth = 1080;
   static const double elementSpacing = cardPadding * 0.5;
   static const double cardOutlineWidth = 0.3;
 
   static const defaultBorderRadius = BorderRadius.only(
-    topLeft: Radius.circular(24),
-    topRight: Radius.circular(24),
-    bottomLeft: Radius.circular(24),
-    bottomRight: Radius.circular(24),
+    topLeft: Radius.circular(14),
+    topRight: Radius.circular(14),
+    bottomLeft: Radius.circular(14),
+    bottomRight: Radius.circular(14),
   );
 
   static const defaultBorderRadiusTextField = BorderRadius.only(

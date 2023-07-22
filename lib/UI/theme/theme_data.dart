@@ -6,7 +6,7 @@ import 'colors.dart';
 
 class AppThemeData {
   static ThemeData themeLight = ThemeData(
-    fontFamily: AppFonts.DINRoundPro,
+    fontFamily: AppFonts.SFPro,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.white,
       foregroundColor: AppColors.white,
@@ -108,7 +108,7 @@ class AppThemeData {
   );
 
   static ThemeData themeDark = ThemeData(
-    fontFamily: AppFonts.DINRoundPro,
+    fontFamily: AppFonts.SFPro,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.cardLight,
       iconTheme: IconThemeData(
