@@ -70,9 +70,7 @@ class NavigationService {
     );
   }
 
-  AppRoutes getInitialPath() {
-    return AppRoutes.share_location;
-  }
+  AppRoutes getInitialPath() => AppRoutes.share_location;
 }
 
 String getRoutePath(String path, {Map<String, dynamic> quary = const {}}) {
