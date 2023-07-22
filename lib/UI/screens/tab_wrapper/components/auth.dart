@@ -9,12 +9,11 @@ import '../../../theme/colors.dart';
 import '../../../theme/spacings.dart';
 
 class AuthenticationView extends StatelessWidget {
-  const AuthenticationView({
-    super.key,
-  });
+  const AuthenticationView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Stack(
       children: [
         BackdropFilter(
@@ -56,11 +55,14 @@ class AuthenticationView extends StatelessWidget {
                 OkepointPrimaryButton(
                   onPressed: () {},
                   title: "Signin with Apple",
-                  color: AppColors.white,
-                  textColor: AppColors.black,
+                  color: isLight ? AppColors.black : AppColors.white,
+                  textColor: !isLight ? AppColors.black : AppColors.white,
                   icon: Padding(
                     padding: const EdgeInsets.all(AppSpacings.elementSpacing),
-                    child: Image.asset(IconPaths.apple),
+                    child: Image.asset(
+                      IconPaths.apple,
+                      color: !isLight ? AppColors.black : AppColors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacings.elementSpacing),
