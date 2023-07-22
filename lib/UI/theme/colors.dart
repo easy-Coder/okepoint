@@ -39,5 +39,5 @@ class AppColors {
 
   //secondary colors
   static const Color green = Color(0xFF2CB053);
-  static const Color red = Color(0xFFEC5A53);
+  static const Color red = Color(0xFFE25622);
 }

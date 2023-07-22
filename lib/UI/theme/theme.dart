@@ -21,7 +21,7 @@ class AppTheme {
   LocalStorageService get storageService => ref.read(localStorageProvider);
   String? theme;
 
-  ValueNotifier<ThemeData> themeDataNotifier = ValueNotifier<ThemeData>(AppThemeData.themeDark);
+  ValueNotifier<ThemeData> themeDataNotifier = ValueNotifier<ThemeData>(AppThemeData.themeLight);
   bool isLightMode(BuildContext context) => Theme.of(context).brightness == Brightness.light;
 
   void setThemeFromLocalStorage() async {

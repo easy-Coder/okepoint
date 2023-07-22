@@ -1,38 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/UI/components/buttons/linked_text.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/constants/image_paths.dart';
 
+import '../../../data/services/remote_config_service.dart';
 import '../../components/buttons/primary_button.dart';
+import '../../components/cards/blur.dart';
+import '../../components/cards/emergency_card.dart';
 import '../../components/cards/paddings.dart';
 import '../../theme/spacings.dart';
 
-class ShareLocationViewWidget extends StatelessWidget {
+class ShareLocationViewWidget extends ConsumerWidget {
   const ShareLocationViewWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final emergencies = ref.read(remoteConfigServiceProvider).appEmergencies;
+
     return Scaffold(
       body: SafeArea(
         child: CardPadding(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Column(
+                child: Stack(
                   children: [
-                    const SizedBox(height: AppSpacings.elementSpacing),
-                    Image.asset(
-                      ImagePaths.contactPoint,
-                      height: 80,
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: AppSpacings.elementSpacing),
+                          Image.asset(
+                            ImagePaths.contactPoint,
+                            height: 80,
+                          ),
+                          const SizedBox(height: AppSpacings.elementSpacing),
+                          OkepointTexts.headingBig("Find your friends and Family on a Map", context, center: true),
+                          const SizedBox(height: AppSpacings.elementSpacing),
+                          CardPadding(
+                            child: OkepointTexts.bodyText(
+                              "Select mode & start sharing your location with your firends or family members.",
+                              context,
+                              center: true,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacings.cardPadding * 2),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: emergencies.length + 1,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              if (index == emergencies.length) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: AppSpacings.elementSpacing),
+                                  child: LinkedText(
+                                    link: "Add Custom Emergency",
+                                    onLinkTap: () {},
+                                  ),
+                                );
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
+                                child: EmergencyCard(
+                                  emergency: emergencies[index],
+                                  selected: index == 0,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: AppSpacings.cardPadding * 2),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: AppSpacings.elementSpacing),
-                    OkepointTexts.headingBig("Find your friends and Family on a Map", context, center: true),
-                    const SizedBox(height: AppSpacings.elementSpacing),
-                    CardPadding(
-                      child: OkepointTexts.bodyText(
-                        "Start sharing your location with your firends or family members.",
-                        context,
-                        center: true,
+                    const Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: BlurCardArea(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
                     ),
                   ],

@@ -17,6 +17,7 @@ dependencies:
   # firebase services
   firebase_core: ^2.14.0
   firebase_auth: ^4.6.3
+  firebase_remote_config: ^4.2.4
   cloud_firestore: ^4.8.1
   google_sign_in: ^6.1.4
   sign_in_with_apple: ^5.0.0

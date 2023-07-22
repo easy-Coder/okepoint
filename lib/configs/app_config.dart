@@ -10,6 +10,8 @@ class AppFlavorConfigs {
 
   set setFlavor(AppFlavor value) => flavor = value;
 
+  bool get isDevelopment => flavor == AppFlavor.dev;
+
   static AppFlavorConfigs get instance {
     _intance ??= AppFlavorConfigs._();
     return _intance!;

@@ -5,8 +5,6 @@ class UserProfileWiget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.red,
-    );
+    return const Scaffold();
   }
 }

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:okepoint/constants/app_routes.dart';
 
+import 'components/auth.dart';
+
 class TabWrapper extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
   const TabWrapper({required this.navigationShell, super.key});
@@ -33,7 +35,12 @@ class TabWrapper extends ConsumerWidget {
             },
           ).toList(),
         ),
-        body: ClipRRect(child: navigationShell),
+        body: Stack(
+          children: [
+            ClipRRect(child: navigationShell),
+            const AuthenticationView(),
+          ],
+        ),
       ),
     );
   }

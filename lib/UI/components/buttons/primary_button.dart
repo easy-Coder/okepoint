@@ -54,7 +54,7 @@ class _OkepointPrimaryButtonState extends State<OkepointPrimaryButton> {
       child: Container(
         height: widget.height,
         constraints: const BoxConstraints(minWidth: 120),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacings.cardPadding * 0.8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacings.cardPadding),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: defaultBorderRadius,
