@@ -1,8 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/UI/theme/theme.dart';
 import 'package:okepoint/data/services/navigation_service.dart';
+
+import 'configs/app_config.dart';
+import 'configs/firebase_options.dart';
+
+enum AppFlavor { dev, prod }
+
+Future<void> configureApp(AppFlavor flavor) async {
+  AppFlavorConfigs.instance.setFlavor = flavor;
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: kIsWeb ? DefaultFirebaseOptions.currentPlatform(flavor) : null);
+}
 
 class OkePointApp extends ConsumerWidget {
   const OkePointApp({super.key});
