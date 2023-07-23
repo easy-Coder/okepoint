@@ -14,9 +14,7 @@ final appThemeProvider = Provider<AppTheme>((ref) {
 class AppTheme {
   final Ref ref;
 
-  AppTheme(this.ref) {
-    setThemeFromLocalStorage();
-  }
+  AppTheme(this.ref);
 
   LocalStorageService get storageService => ref.read(localStorageProvider);
   String? theme;

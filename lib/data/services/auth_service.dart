@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,6 +20,10 @@ abstract class SocialAuthService {
 class AuthService extends SocialAuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  User? _firebaseUser;
+
+  StreamSubscription<User?>? _authSubscription;
+
   SocialAuthProvider get authProvider {
     final provider = firebaseAuth.currentUser?.providerData[0].providerId;
 
@@ -31,7 +37,19 @@ class AuthService extends SocialAuthService {
 
   User? get currentFirebaseUser => FirebaseAuth.instance.currentUser;
 
-  Stream<User?> authStateChanges() => firebaseAuth.authStateChanges();
+  Stream<User?> _authStateChanges() => firebaseAuth.authStateChanges();
+
+  void userAuthStream({required Function(User? user) userOnChanged}) {
+    _authSubscription?.cancel();
+    _authSubscription = null;
+
+    _authSubscription = _authStateChanges().listen((event) async {
+      bool useCallback = (_firebaseUser != null && event == null) || (_firebaseUser == null && event != null);
+      _firebaseUser = event;
+
+      if (useCallback) userOnChanged(event);
+    });
+  }
 
   Future<String?> reloadFirebaseUser() async {
     await FirebaseAuth.instance.currentUser?.reload();

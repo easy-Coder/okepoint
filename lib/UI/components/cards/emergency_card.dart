@@ -33,9 +33,18 @@ class EmergencyCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OkepointTexts.headingSmall(emergency.title, context),
+                OkepointTexts.headingSmall(
+                  emergency.title,
+                  context,
+                  color: selected ? AppColors.white : null,
+                  fontWeight: FontWeight.w600,
+                ),
                 const SizedBox(height: AppSpacings.elementSpacing * 0.25),
-                OkepointTexts.bodyText(emergency.subtitle, context),
+                OkepointTexts.bodyText(
+                  emergency.subtitle,
+                  context,
+                  color: selected ? AppColors.white : null,
+                ),
               ],
             ),
           ),

@@ -44,7 +44,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
                               center: true,
                             ),
                           ),
-                          const SizedBox(height: AppSpacings.cardPadding * 2),
+                          const SizedBox(height: AppSpacings.cardPadding),
                           ListView.builder(
                             shrinkWrap: true,
                             itemCount: emergencies.length + 1,

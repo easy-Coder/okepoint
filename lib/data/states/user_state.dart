@@ -3,16 +3,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/data/models/user.dart';
 import 'package:okepoint/data/services/auth_service.dart';
 
+import '../repositories/user_repository.dart';
+
 final userStateProvider = StateNotifierProvider<UserState, User?>((ref) {
   return UserState(ref: ref);
 });
 
 class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
-  get authService => ref.read(authServiceProvider);
   final Ref ref;
+
+  bool _launchSetUp = true;
+
+  AuthService get _authService => ref.read(authServiceProvider);
+  UserRepository get _userRepository => ref.read(userRepositoryProvider);
+  ValueNotifier<User?> get currentUser => _userRepository.currentUserNotifier;
 
   UserState({required this.ref}) : super(null) {
     WidgetsBinding.instance.addObserver(this);
+
+    _authService.userAuthStream(userOnChanged: (firebaseUser) async {
+      if (firebaseUser == null) {
+        _onUserEvent(null);
+        _clearUserCachedData();
+        return;
+      }
+
+      await _fetchUserDocuments(firebaseUser.uid);
+    });
   }
 
   @override
@@ -34,7 +51,29 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  Future<void> _onUserEvent(User? userData) async {}
+  Future<void> _fetchUserDocuments(String uid) async {
+    await _userRepository.getCurrentUser(uid);
+    state = _userRepository.currentUserNotifier.value;
+
+    if (currentUser.value != null && _launchSetUp) {
+      _launchSetUp = false;
+      _appStartUserAvailable(currentUser.value!);
+    }
+    _onUserEvent(currentUser.value);
+  }
+
+  Future<void> _onUserEvent(User? user) async {
+    // cancel listeners
+    _userRepository.clearUserSubscription();
+
+    if (user != null) {
+      _userRepository.listenToCurrentUser(user.uid, onUserUpdate: (user) {
+        state = user;
+      });
+    }
+  }
+
   Future<void> _appStartUserAvailable(User user) async {}
-  Future<void> handleSignOut() async {}
+
+  Future<void> _clearUserCachedData() async {}
 }

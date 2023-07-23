@@ -1,19 +1,23 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/constants/icon_path.dart';
+import 'package:okepoint/data/states/auth_state.dart';
 
 import '../../../components/buttons/primary_button.dart';
 import '../../../components/texts/texts.dart';
 import '../../../theme/colors.dart';
 import '../../../theme/spacings.dart';
 
-class AuthenticationView extends StatelessWidget {
+class AuthenticationView extends ConsumerWidget {
   const AuthenticationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final state = ref.watch(authStateProvider);
+
     return Stack(
       children: [
         BackdropFilter(
@@ -53,10 +57,11 @@ class AuthenticationView extends StatelessWidget {
                 OkepointTexts.bodyText("Signin to Continue using Okepoint", context),
                 const SizedBox(height: AppSpacings.cardPadding),
                 OkepointPrimaryButton(
-                  onPressed: () {},
+                  onPressed: () => state.signInWithApple(),
                   title: "Signin with Apple",
                   color: isLight ? AppColors.black : AppColors.white,
                   textColor: !isLight ? AppColors.black : AppColors.white,
+                  state: state.isLoading ? ButtonState.loading : ButtonState.initial,
                   icon: Padding(
                     padding: const EdgeInsets.all(AppSpacings.elementSpacing),
                     child: Image.asset(
@@ -67,9 +72,10 @@ class AuthenticationView extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacings.elementSpacing),
                 OkepointPrimaryButton(
-                  onPressed: () {},
+                  onPressed: () => state.signInWithGoogle(),
                   title: "Signin with Google",
                   color: AppColors.blue,
+                  state: state.isLoading ? ButtonState.loading : ButtonState.initial,
                   icon: Padding(
                     padding: const EdgeInsets.all(AppSpacings.elementSpacing),
                     child: Image.asset(IconPaths.google),
