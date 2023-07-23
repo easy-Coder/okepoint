@@ -116,7 +116,7 @@ class AppThemeData {
         size: 24,
       ),
     ),
-    dividerTheme: const DividerThemeData(color: AppColors.dividerDark, thickness: 0.15),
+    dividerTheme: const DividerThemeData(color: AppColors.dividerDark, thickness: AppSpacings.cardOutlineWidth),
     colorScheme: const ColorScheme(
       primary: AppColors.primaryColor,
       secondary: AppColors.black,

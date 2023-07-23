@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-enum AppRoutes { share_location, profile }
+enum AppRoutes { share_location, profile, map }
 
 extension AppRouteExtension on AppRoutes {
   String get path {
@@ -9,7 +9,8 @@ extension AppRouteExtension on AppRoutes {
         return '/share_location';
       case AppRoutes.profile:
         return '/profile';
-
+      case AppRoutes.map:
+        return '/map-view';
       default:
         return '/';
     }

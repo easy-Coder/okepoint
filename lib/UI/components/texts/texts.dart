@@ -49,7 +49,7 @@ class OkepointTexts {
       overflow: overflow,
       textAlign: center ? TextAlign.center : TextAlign.start,
       maxLines: maxLines,
-      style: _textTheme(context).titleMedium?.copyWith(
+      style: _textTheme(context).titleLarge?.copyWith(
             color: color,
             fontWeight: fontWeight,
             fontFamily: fontFamily,

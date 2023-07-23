@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/UI/components/buttons/linked_text.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
+import 'package:okepoint/UI/screens/share_location/share_location_state.dart';
 import 'package:okepoint/constants/image_paths.dart';
 
 import '../../../data/services/remote_config_service.dart';
@@ -17,6 +18,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emergencies = ref.read(remoteConfigServiceProvider).appEmergencies;
+    final selectedEmergencyId = ref.watch(selectedEmergencyProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -61,9 +63,14 @@ class ShareLocationViewWidget extends ConsumerWidget {
                               }
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
-                                child: EmergencyCard(
-                                  emergency: emergencies[index],
-                                  selected: index == 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    ref.watch(selectedEmergencyProvider.notifier).state = emergencies[index].type;
+                                  },
+                                  child: EmergencyCard(
+                                    emergency: emergencies[index],
+                                    selected: selectedEmergencyId == emergencies[index].type,
+                                  ),
                                 ),
                               );
                             },

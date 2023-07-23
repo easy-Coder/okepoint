@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:okepoint/UI/screens/map_view/map_view.dart';
 
 import 'package:okepoint/UI/screens/share_location/share_location_view.dart';
 import 'package:okepoint/constants/app_routes.dart';
@@ -66,11 +68,20 @@ class NavigationService {
             )
           ],
         ),
+        GoRoute(
+          name: AppRoutes.map.name,
+          path: AppRoutes.map.path,
+          pageBuilder: (_, state) {
+            return const NoTransitionPage(
+              child: MapView(),
+            );
+          },
+        ),
       ],
     );
   }
 
-  AppRoutes getInitialPath() => AppRoutes.share_location;
+  AppRoutes getInitialPath() => kIsWeb ? AppRoutes.map : AppRoutes.share_location;
 }
 
 String getRoutePath(String path, {Map<String, dynamic> quary = const {}}) {

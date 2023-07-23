@@ -33,6 +33,8 @@ class User {
     required this.updatedAt,
   });
 
+  String get displayName => "$firstName $lastName";
+
   User copyWith({
     String? uid,
     String? email,

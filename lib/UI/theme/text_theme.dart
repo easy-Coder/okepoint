@@ -151,7 +151,6 @@ class AppTextThemes {
       fontFamily: AppFonts.SFPro,
       fontSize: body1Size,
       color: AppColors.lightGrey,
-      height: 1.35,
       fontWeight: FontWeight.w400,
     ),
     bodyMedium: TextStyle(
