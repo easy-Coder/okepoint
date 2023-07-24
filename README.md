@@ -16,8 +16,6 @@ This is a personal project however,cc & contributions are welcome. I will be pos
 
 ## What is Òkè point?
 
-The word Òkè(igbo language) means "Share" and, then we have "point".
-
 Òkè point(SharePoint) is a realtime IO location tracker software(web&mobile), which will help it users share their locations, attached with their current mode(emergency) to their loved once and modes professionals(Police, legal help etc).
 
 # Getting Started(Dev)
