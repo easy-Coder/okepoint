@@ -39,11 +39,11 @@ class NavigationService {
           },
           branches: [
             StatefulShellBranch(
-              initialLocation: AppRoutes.share_location.path,
+              initialLocation: AppRoutes.shareLocation.path,
               routes: [
                 GoRoute(
-                  name: AppRoutes.share_location.name,
-                  path: AppRoutes.share_location.path,
+                  name: AppRoutes.shareLocation.name,
+                  path: AppRoutes.shareLocation.path,
                   pageBuilder: (_, state) {
                     return const NoTransitionPage(
                       child: ShareLocationViewWidget(),
@@ -81,7 +81,7 @@ class NavigationService {
     );
   }
 
-  AppRoutes getInitialPath() => kIsWeb ? AppRoutes.map : AppRoutes.share_location;
+  AppRoutes getInitialPath() => kIsWeb ? AppRoutes.map : AppRoutes.shareLocation;
 }
 
 String getRoutePath(String path, {Map<String, dynamic> quary = const {}}) {

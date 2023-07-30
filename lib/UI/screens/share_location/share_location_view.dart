@@ -46,7 +46,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
                               center: true,
                             ),
                           ),
-                          const SizedBox(height: AppSpacings.cardPadding),
+                          const SizedBox(height: AppSpacings.cardPadding * 2),
                           ListView.builder(
                             shrinkWrap: true,
                             itemCount: emergencies.length + 1,
@@ -64,6 +64,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
                                 child: InkWell(
+                                  borderRadius: BorderRadius.circular(15),
                                   onTap: () {
                                     ref.watch(selectedEmergencyProvider.notifier).state = emergencies[index].type;
                                   },

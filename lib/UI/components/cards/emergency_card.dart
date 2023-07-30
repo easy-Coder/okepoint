@@ -48,11 +48,12 @@ class EmergencyCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(
-            CupertinoIcons.add_circled_solid,
-            color: (selected ? AppColors.white : Theme.of(context).unselectedWidgetColor).lighten(0.2),
-            size: 30,
-          ),
+          if (selected)
+            Icon(
+              CupertinoIcons.add_circled_solid,
+              color: (selected ? AppColors.white : Theme.of(context).unselectedWidgetColor).lighten(0.2),
+              size: 30,
+            ),
         ],
       ),
     );

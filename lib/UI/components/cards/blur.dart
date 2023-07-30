@@ -29,8 +29,8 @@ class BlurCardArea extends StatelessWidget {
             begin: begin,
             end: end,
             colors: [
-              (color ?? Theme.of(context).colorScheme.background).withOpacity(.1),
-              (color ?? Theme.of(context).colorScheme.background).withOpacity(.8),
+              (color ?? Theme.of(context).colorScheme.background).withOpacity(.0001),
+              (color ?? Theme.of(context).colorScheme.background).withOpacity(.4),
               color ?? Theme.of(context).colorScheme.background,
             ],
           ),
