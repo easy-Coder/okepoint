@@ -21,10 +21,14 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
   ValueNotifier<User?> get currentUser => _userRepository.currentUserNotifier;
 
+  set updateUser(User? user) => state = user;
+
   UserState({required this.ref}) : super(null) {
     WidgetsBinding.instance.addObserver(this);
 
     _authService.userAuthStream(userOnChanged: (firebaseUser) async {
+      debugPrint("USER IS AUTHENTICATED: ${firebaseUser?.email != null} EMAIL: ${firebaseUser?.email} ");
+
       if (firebaseUser == null) {
         _onUserEvent(null);
         _clearUserCachedData();
@@ -56,12 +60,13 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
   Future<void> _fetchUserDocuments(String uid) async {
     await _userRepository.getCurrentUser(uid);
-    state = _userRepository.currentUserNotifier.value;
+    updateUser = _userRepository.currentUserNotifier.value;
 
     if (currentUser.value != null && _launchSetUp) {
       _launchSetUp = false;
       _appStartUserAvailable(currentUser.value!);
     }
+
     _onUserEvent(currentUser.value);
   }
 
@@ -71,7 +76,7 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
     if (user != null) {
       _userRepository.listenToCurrentUser(user.uid, onUserUpdate: (user) {
-        state = user;
+        updateUser = user;
       });
     }
 
@@ -84,6 +89,9 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
   Future<void> logout() async {
     final result = await _authService.signOut();
-    if (result) _userRepository.currentUserNotifier.value = null;
+    if (result) {
+      _userRepository.currentUserNotifier.value = null;
+      updateUser = null;
+    }
   }
 }

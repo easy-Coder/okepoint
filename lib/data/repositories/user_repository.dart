@@ -56,14 +56,14 @@ class UserRepository {
     } catch (_) {}
   }
 
-  Future<bool> createAccountOrSigninWithApple() async {
+  Future<User?> createAccountOrSigninWithApple() async {
     try {
       final userCredential = await _authService.signInWithApple();
       if (userCredential != null) {
         final firebaseUser = userCredential.user;
         final user = await getCurrentUser(firebaseUser!.uid);
 
-        if (user != null) return true;
+        if (user != null) return user;
 
         // user not exist
         await _userFirestore.doc(firebaseUser.uid).set({
@@ -81,21 +81,21 @@ class UserRepository {
           'updatedAt': utcTimeNow,
         });
 
-        await getCurrentUser(firebaseUser.uid);
-        return true;
+        final newUser = await getCurrentUser(firebaseUser.uid);
+        return newUser;
       }
     } catch (_) {}
-    return false;
+    return null;
   }
 
-  Future<bool> createAccountOrSigninWithGoogle() async {
+  Future<User?> createAccountOrSigninWithGoogle() async {
     try {
       final userCredential = await _authService.signInWithGoogle();
       if (userCredential != null) {
         final firebaseUser = userCredential.user;
         final user = await getCurrentUser(firebaseUser!.uid);
 
-        if (user != null) return true;
+        if (user != null) return user;
 
         // user not exist
         await _userFirestore.doc(firebaseUser.uid).set({
@@ -113,11 +113,13 @@ class UserRepository {
           'updatedAt': utcTimeNow,
         });
 
-        await getCurrentUser(firebaseUser.uid);
-        return true;
+        final newUser = await getCurrentUser(firebaseUser.uid);
+        return newUser;
       }
-    } catch (_) {}
-    return false;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
   void clearUserSubscription() {

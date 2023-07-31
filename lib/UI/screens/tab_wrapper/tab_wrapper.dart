@@ -15,6 +15,10 @@ class TabWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStateProvider);
 
+    ref.listen(userStateProvider, (oldUser, newUser) {
+      if (newUser == null) navigationShell.goBranch(0);
+    });
+
     return Material(
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(

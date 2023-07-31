@@ -32,14 +32,27 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-    <key>NSLocationAlwaysUsageDescription</key>    
-    <string>Display location in realtime</string>    
-    <key>NSLocationWhenInUseUsageDescription</key>    
-    <string>To display location when app is in use</string>    
-    <key>CFBundleURLSchemes</key>
-    <array>
-        <string>com.googleusercontent.apps.244445171854-ljb0ul5e6p7tocrssgjafefocq4kkt4f</string>
-    </array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Display location in realtime</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To display location when app is in use</string>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>com.googleusercontent.apps.244445171854-ljb0ul5e6p7tocrssgjafefocq4kkt4f</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Bundle ID</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.244445171854-ljb0ul5e6p7tocrssgjafefocq4kkt4f</string>
+			</array>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

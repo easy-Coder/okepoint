@@ -1,15 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, constant_identifier_names
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 
 import '../../constants/icon_path.dart';
 import '../../constants/keys.dart';
+import '../../utils/useful_methods.dart';
 import '../models/point.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -29,7 +28,7 @@ class MapService {
 
   Future<LocationPoint?> getUserCurrentPosition() async {
     try {
-      final icon = await getMapIcon(IconPaths.pin);
+      final icon = await getIconFromAssetString(IconPaths.pin);
 
       final isGranted = await requestPermission();
 
@@ -40,7 +39,7 @@ class MapService {
 
       final location = LocationPoint(
         id: "current-user-location",
-        name: 'Nigeria',
+        name: '',
         geohash: '',
         location: latLng,
         descriptor: icon,
@@ -84,21 +83,8 @@ class MapService {
         if (results.isNotEmpty) return point.copyWith(name: results.first["formatted_address"] as String?);
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
     return point;
-  }
-
-  Future<BitmapDescriptor> getMapIcon(String iconPath) async {
-    final Uint8List endMarker = await getBytesFromAsset(iconPath, 45);
-    final icon = BitmapDescriptor.fromBytes(endMarker);
-    return icon;
-  }
-
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 }

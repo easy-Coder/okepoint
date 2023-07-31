@@ -72,7 +72,7 @@ class _OkepointPrimaryButtonState extends State<OkepointPrimaryButton> {
                   children: [
                     if (widget.icon != null) ...[
                       widget.icon!,
-                      const SizedBox(width: AppSpacings.elementSpacing),
+                      const SizedBox(width: AppSpacings.elementSpacing * 0.5),
                     ],
                     OkepointTexts.button(
                       widget.title,

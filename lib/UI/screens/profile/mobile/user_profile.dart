@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/UI/components/buttons/linked_text.dart';
 import 'package:okepoint/UI/components/buttons/outline_button.dart';
 import 'package:okepoint/UI/components/cards/paddings.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
@@ -32,12 +33,25 @@ class UserProfileWiget extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: AppSpacings.elementSpacing),
-                ProfileAvatar(
-                  user: user,
-                  onPickImage: (File file) {},
+                CardPadding(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          LinkedText(link: "Edit", onLinkTap: () {}),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacings.elementSpacing),
+                      ProfileAvatar(
+                        user: user,
+                        onPickImage: (File file) {},
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: AppSpacings.elementSpacing),
-                OkepointTexts.headingMedium(user.displayName, context),
+                if (user.displayName.trim().isNotEmpty) OkepointTexts.headingMedium(user.displayName, context),
                 const SizedBox(height: AppSpacings.cardPadding * 2),
                 const UserLocation(),
                 const SizedBox(height: AppSpacings.cardPadding),

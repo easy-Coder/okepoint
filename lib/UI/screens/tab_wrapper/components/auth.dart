@@ -32,58 +32,76 @@ class AuthenticationView extends ConsumerWidget {
           bottom: 0,
           left: 0,
           right: 0,
-          child: Container(
-            padding: const EdgeInsets.all(AppSpacings.cardPadding),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15),
-                topRight: Radius.circular(15),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).cardColor.withOpacity(.8),
-                  spreadRadius: 3,
-                  blurRadius: 8,
-                  offset: const Offset(0, -10),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                OkepointTexts.headingMedium("New User?", context),
-                const SizedBox(height: AppSpacings.elementSpacing * 0.25),
-                OkepointTexts.bodyText("Signin to Continue using Okepoint", context),
-                const SizedBox(height: AppSpacings.cardPadding),
-                OkepointPrimaryButton(
-                  onPressed: () => state.signInWithApple(),
-                  title: "Signin with Apple",
-                  color: isLight ? AppColors.black : AppColors.white,
-                  textColor: !isLight ? AppColors.black : AppColors.white,
-                  state: state.isAppleSiginIn ? ButtonState.loading : ButtonState.initial,
-                  icon: Padding(
-                    padding: const EdgeInsets.all(AppSpacings.elementSpacing),
-                    child: Image.asset(
-                      IconPaths.apple,
-                      color: !isLight ? AppColors.black : AppColors.white,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 60,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).iconTheme.color,
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacings.elementSpacing),
-                OkepointPrimaryButton(
-                  onPressed: () => state.signInWithGoogle(),
-                  title: "Signin with Google",
-                  color: AppColors.blue,
-                  state: state.isGoogleSiginIn ? ButtonState.loading : ButtonState.initial,
-                  icon: Padding(
-                    padding: const EdgeInsets.all(AppSpacings.elementSpacing),
-                    child: Image.asset(IconPaths.google),
+                ],
+              ),
+              const SizedBox(height: AppSpacings.elementSpacing),
+              Container(
+                padding: const EdgeInsets.all(AppSpacings.cardPadding),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).cardColor.withOpacity(.4),
+                      spreadRadius: 3,
+                      blurRadius: 8,
+                      offset: const Offset(0, -10),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacings.cardPadding),
-              ],
-            ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    OkepointTexts.headingMedium("SignIn", context),
+                    const SizedBox(height: AppSpacings.elementSpacing * 0.25),
+                    OkepointTexts.bodyText("Signin to Continue using Okepoint", context),
+                    const SizedBox(height: AppSpacings.cardPadding),
+                    OkepointPrimaryButton(
+                      onPressed: () => state.signInWithApple(),
+                      title: "Signin with Apple",
+                      color: isLight ? AppColors.black : AppColors.white,
+                      textColor: !isLight ? AppColors.black : AppColors.white,
+                      state: state.isAppleSiginIn ? ButtonState.loading : ButtonState.initial,
+                      icon: Padding(
+                        padding: const EdgeInsets.all(AppSpacings.elementSpacing),
+                        child: Image.asset(
+                          IconPaths.apple,
+                          color: !isLight ? AppColors.black : AppColors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacings.elementSpacing),
+                    OkepointPrimaryButton(
+                      onPressed: () => state.signInWithGoogle(),
+                      title: "Signin with Google",
+                      color: AppColors.blue,
+                      state: state.isGoogleSiginIn ? ButtonState.loading : ButtonState.initial,
+                      icon: Padding(
+                        padding: const EdgeInsets.all(AppSpacings.elementSpacing),
+                        child: Image.asset(IconPaths.google),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacings.cardPadding),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],

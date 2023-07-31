@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/data/states/user_state.dart';
 
 import '../repositories/user_repository.dart';
 
@@ -13,6 +14,7 @@ class AuthState extends ChangeNotifier {
   bool isAppleSiginIn = false, isGoogleSiginIn = false;
 
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
+  UserState get userState => ref.read(userStateProvider.notifier);
 
   AuthState(this.ref);
 
@@ -21,7 +23,7 @@ class AuthState extends ChangeNotifier {
       isAppleSiginIn = true;
       notifyListeners();
 
-      await _userRepository.createAccountOrSigninWithApple();
+      userState.currentUser.value = userState.updateUser = await _userRepository.createAccountOrSigninWithApple();
 
       isAppleSiginIn = false;
       notifyListeners();
@@ -33,7 +35,7 @@ class AuthState extends ChangeNotifier {
       isGoogleSiginIn = true;
       notifyListeners();
 
-      await _userRepository.createAccountOrSigninWithGoogle();
+      userState.updateUser = await _userRepository.createAccountOrSigninWithGoogle();
 
       isGoogleSiginIn = false;
       notifyListeners();
