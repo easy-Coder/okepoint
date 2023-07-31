@@ -61,7 +61,7 @@ class AuthenticationView extends ConsumerWidget {
                   title: "Signin with Apple",
                   color: isLight ? AppColors.black : AppColors.white,
                   textColor: !isLight ? AppColors.black : AppColors.white,
-                  state: state.isLoading ? ButtonState.loading : ButtonState.initial,
+                  state: state.isAppleSiginIn ? ButtonState.loading : ButtonState.initial,
                   icon: Padding(
                     padding: const EdgeInsets.all(AppSpacings.elementSpacing),
                     child: Image.asset(
@@ -75,7 +75,7 @@ class AuthenticationView extends ConsumerWidget {
                   onPressed: () => state.signInWithGoogle(),
                   title: "Signin with Google",
                   color: AppColors.blue,
-                  state: state.isLoading ? ButtonState.loading : ButtonState.initial,
+                  state: state.isGoogleSiginIn ? ButtonState.loading : ButtonState.initial,
                   icon: Padding(
                     padding: const EdgeInsets.all(AppSpacings.elementSpacing),
                     child: Image.asset(IconPaths.google),

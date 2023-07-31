@@ -4,6 +4,7 @@ import 'package:okepoint/data/models/user.dart';
 import 'package:okepoint/data/services/auth_service.dart';
 
 import '../repositories/user_repository.dart';
+import '../services/map_service.dart';
 
 final userStateProvider = StateNotifierProvider<UserState, User?>((ref) {
   return UserState(ref: ref);
@@ -16,6 +17,8 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
   AuthService get _authService => ref.read(authServiceProvider);
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
+  MapService get _mapService => ref.read(mapServiceProvider);
+
   ValueNotifier<User?> get currentUser => _userRepository.currentUserNotifier;
 
   UserState({required this.ref}) : super(null) {
@@ -71,9 +74,16 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
         state = user;
       });
     }
+
+    _mapService.getUserCurrentPosition();
   }
 
   Future<void> _appStartUserAvailable(User user) async {}
 
   Future<void> _clearUserCachedData() async {}
+
+  Future<void> logout() async {
+    final result = await _authService.signOut();
+    if (result) _userRepository.currentUserNotifier.value = null;
+  }
 }

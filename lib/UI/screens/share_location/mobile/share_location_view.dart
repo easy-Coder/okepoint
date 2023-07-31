@@ -5,12 +5,12 @@ import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/screens/share_location/share_location_state.dart';
 import 'package:okepoint/constants/image_paths.dart';
 
-import '../../../data/services/remote_config_service.dart';
-import '../../components/buttons/primary_button.dart';
-import '../../components/cards/blur.dart';
-import '../../components/cards/emergency_card.dart';
-import '../../components/cards/paddings.dart';
-import '../../theme/spacings.dart';
+import '../../../../data/services/remote_config_service.dart';
+import '../../../components/buttons/primary_button.dart';
+import '../../../components/cards/blur.dart';
+import '../../../components/cards/emergency_card.dart';
+import '../../../components/cards/paddings.dart';
+import '../../../theme/spacings.dart';
 
 class ShareLocationViewWidget extends ConsumerWidget {
   const ShareLocationViewWidget({super.key});

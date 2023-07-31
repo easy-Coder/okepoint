@@ -42,7 +42,7 @@ class _OkepointPrimaryButtonState extends State<OkepointPrimaryButton> {
     final bool disable = [ButtonState.disabled, ButtonState.loading].contains(widget.state);
     final bool isLoading = [ButtonState.loading].contains(widget.state);
 
-    Color backgroundColor = disable ? AppColors.primaryColor.darken(0.3) : (widget.color ?? Theme.of(context).primaryColor);
+    Color backgroundColor = disable ? ((widget.color ?? Theme.of(context).primaryColor)).darken(0.3) : (widget.color ?? Theme.of(context).primaryColor);
     Color? textColor = widget.textColor;
 
     final defaultBorderRadius = widget.borderRadius ?? AppSpacings.defaultBorderRadius;
@@ -61,7 +61,12 @@ class _OkepointPrimaryButtonState extends State<OkepointPrimaryButton> {
         ),
         child: Center(
           child: isLoading
-              ? const CircularProgressIndicator()
+              ? Transform.scale(
+                  scale: 0.8,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(textColor ?? AppColors.white),
+                  ),
+                )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

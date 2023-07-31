@@ -10,35 +10,33 @@ final authStateProvider = ChangeNotifierProvider<AuthState>((ref) {
 class AuthState extends ChangeNotifier {
   final Ref ref;
 
-  bool isLoading = false;
+  bool isAppleSiginIn = false, isGoogleSiginIn = false;
 
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
 
   AuthState(this.ref);
 
   Future<void> signInWithApple() async {
-    if (isLoading == false) {
-      isLoading = true;
+    if (isAppleSiginIn == false) {
+      isAppleSiginIn = true;
       notifyListeners();
 
       await _userRepository.createAccountOrSigninWithApple();
 
-      isLoading = false;
+      isAppleSiginIn = false;
       notifyListeners();
     }
   }
 
   Future<void> signInWithGoogle() async {
-    if (isLoading == false) {
-      isLoading = true;
+    if (isGoogleSiginIn == false) {
+      isGoogleSiginIn = true;
       notifyListeners();
 
       await _userRepository.createAccountOrSigninWithGoogle();
 
-      isLoading = false;
+      isGoogleSiginIn = false;
       notifyListeners();
     }
   }
-
-  Future<void> handleSignOut() async {}
 }

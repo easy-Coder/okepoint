@@ -95,6 +95,7 @@ class AuthService extends SocialAuthService {
 
   Future<bool> signOut() async {
     try {
+      googleIn.signOut();
       await firebaseAuth.signOut();
       return true;
     } on FirebaseAuthException catch (_) {}

@@ -25,9 +25,7 @@ class MapService {
   ValueNotifier<LocationPoint?> currentUserLocationPointNotifier = ValueNotifier<LocationPoint?>(null), destinationLocationPointNotifier = ValueNotifier<LocationPoint?>(null);
   ValueNotifier<Set<Marker>> mapMarkers = ValueNotifier<Set<Marker>>({});
 
-  MapService(this.ref) {
-    getUserCurrentPosition();
-  }
+  MapService(this.ref);
 
   Future<LocationPoint?> getUserCurrentPosition() async {
     try {
@@ -83,14 +81,11 @@ class MapService {
       if (response.statusCode == 200) {
         final body = Map<String, dynamic>.from(jsonDecode(response.body));
         final results = List.from(body["results"]);
-
-        if (results.isNotEmpty) {
-          return point.copyWith(
-            name: results.first["formatted_address"] as String?,
-          );
-        }
+        if (results.isNotEmpty) return point.copyWith(name: results.first["formatted_address"] as String?);
       }
-    } catch (_) {}
+    } catch (e) {
+      print(e);
+    }
     return point;
   }
 

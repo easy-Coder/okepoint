@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:okepoint/data/services/map_service.dart';
 
-import 'components/info_window.dart';
+import '../components/info_window.dart';
 
 class MapView extends ConsumerStatefulWidget {
   const MapView({super.key});
