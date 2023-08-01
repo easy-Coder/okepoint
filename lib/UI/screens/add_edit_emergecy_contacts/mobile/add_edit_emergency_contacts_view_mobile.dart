@@ -7,6 +7,7 @@ import 'package:okepoint/UI/screens/add_edit_contact/mobile/add_edit_contact_vie
 import 'package:okepoint/UI/screens/add_edit_emergecy_contacts/add_edit_emergecy_contacts_state.dart';
 import 'package:okepoint/UI/screens/share_location/share_location_state.dart';
 import 'package:okepoint/UI/theme/spacings.dart';
+import 'package:okepoint/data/models/user/contact.dart';
 
 import '../../../components/buttons/linked_text.dart';
 import '../../../components/buttons/primary_button.dart';
@@ -23,6 +24,7 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
     if (emergency == null) return const SizedBox.shrink();
 
     final contacts = ref.watch(addEditEmergencyContactsProvider.call(emergency));
+    final notifier = ref.read(addEditEmergencyContactsProvider.call(emergency).notifier);
 
     return Scaffold(
       body: Column(
@@ -82,13 +84,17 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return InkWell(
-                            onTap: () => showCupertinoModelBottomSheet(
-                              context: context,
-                              useRootNavigator: true,
-                              enableDrag: false,
-                              isDismissible: false,
-                              builder: (context) => const AddEditContactViewMobile(),
-                            ),
+                            onTap: () async {
+                              final contact = await showCupertinoModelBottomSheet<Contact?>(
+                                context: context,
+                                useRootNavigator: true,
+                                enableDrag: false,
+                                isDismissible: false,
+                                builder: (context) => const AddEditContactViewMobile(),
+                              );
+
+                              if (contact != null) notifier.addContactToEmergency(contact);
+                            },
                             child: CircleAvatar(
                               backgroundColor: Theme.of(context).cardColor,
                               child: Icon(

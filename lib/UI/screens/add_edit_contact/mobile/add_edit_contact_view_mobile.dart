@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:okepoint/UI/components/buttons/linked_text.dart';
 import 'package:okepoint/UI/screens/add_edit_contact/add_edit_contact_state.dart';
 import 'package:okepoint/data/models/user/contact.dart';
+import 'package:okepoint/utils/validations.dart';
 
 import '../../../components/cards/paddings.dart';
 import '../../../components/texts/texts.dart';
@@ -51,10 +52,11 @@ class AddEditContactViewMobile extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
+                      TextFormField(
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
                         controller: state.nameController,
+                        validator: (value) => AppValidations.isName(value) ? null : "Invalid name",
                         decoration: InputDecoration(
                           label: OkepointTexts.bodyText("Name*", context),
                           hintText: "Enter contact name.",
@@ -62,10 +64,11 @@ class AddEditContactViewMobile extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacings.cardPadding),
-                      TextField(
+                      TextFormField(
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.next,
                         controller: state.phoneController,
+                        validator: (value) => AppValidations.isPhone(value) ? null : "Invalid phone",
                         decoration: InputDecoration(
                           label: OkepointTexts.bodyText("Phone*", context),
                           hintText: "Enter contact phone number.",
@@ -78,10 +81,11 @@ class AddEditContactViewMobile extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacings.cardPadding),
-                      TextField(
+                      TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
                         controller: state.emailController,
+                        validator: (value) => AppValidations.isEmail(value) ? null : "Invalid email",
                         decoration: InputDecoration(
                           label: OkepointTexts.bodyText("Email", context),
                           hintText: "Enter contact email",
@@ -104,22 +108,20 @@ class AddEditContactViewMobile extends ConsumerWidget {
                             color: Theme.of(context).inputDecorationTheme.enabledBorder!.borderSide.color,
                           ),
                         ),
-                        child: Expanded(
-                          child: DropdownButton<String>(
-                            value: state.contactTypeController.text,
-                            borderRadius: BorderRadius.circular(15),
-                            dropdownColor: Theme.of(context).cardColor,
-                            isExpanded: true,
-                            hint: OkepointTexts.bodyText("Select contact type", context),
-                            underline: const SizedBox.shrink(),
-                            items: ["Family", "Friend", "Professional"]
-                                .map((e) => DropdownMenuItem<String>(
-                                      value: e,
-                                      child: OkepointTexts.bodyText(e, context),
-                                    ))
-                                .toList(),
-                            onChanged: (v) {},
-                          ),
+                        child: DropdownButton<String>(
+                          value: state.contactTypeController.text.isEmpty ? null : state.contactTypeController.text,
+                          borderRadius: BorderRadius.circular(15),
+                          dropdownColor: Theme.of(context).cardColor,
+                          isExpanded: true,
+                          hint: OkepointTexts.bodyText("Select contact type", context),
+                          underline: const SizedBox.shrink(),
+                          items: ["Family", "Friend", "Professional"]
+                              .map((e) => DropdownMenuItem<String>(
+                                    value: e,
+                                    child: OkepointTexts.bodyText(e, context),
+                                  ))
+                              .toList(),
+                          onChanged: (v) {},
                         ),
                       ),
                       const SizedBox(height: AppSpacings.cardPadding * 2),

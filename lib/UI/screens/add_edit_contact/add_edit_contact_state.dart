@@ -60,5 +60,6 @@ class AddEditContactState extends ChangeNotifier {
     );
 
     debugPrint(newContact.toString());
+    onCompleted(newContact);
   }
 }
