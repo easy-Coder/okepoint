@@ -67,7 +67,9 @@ class AppThemeData {
     inputDecorationTheme: InputDecorationTheme(
       fillColor: AppColors.lightGrey,
       filled: true,
-      hintStyle: AppTextThemes.mobileTextThemeLight.bodyLarge,
+      hintStyle: AppTextThemes.mobileTextThemeLight.bodySmall?.copyWith(
+        color: AppColors.unselectedColorLight,
+      ),
       iconColor: AppColors.black,
       border: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
@@ -166,7 +168,9 @@ class AppThemeData {
     inputDecorationTheme: InputDecorationTheme(
       fillColor: AppColors.black,
       filled: true,
-      hintStyle: AppTextThemes.mobileTextThemeDark.bodyLarge,
+      hintStyle: AppTextThemes.mobileTextThemeLight.bodySmall?.copyWith(
+        color: AppColors.unselectedColorDark,
+      ),
       iconColor: AppColors.white,
       helperStyle: AppTextThemes.mobileTextThemeDark.bodyMedium,
       border: AppSpacings.outLineBorder.copyWith(

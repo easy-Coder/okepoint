@@ -37,14 +37,22 @@ class ShareLocationViewWidget extends ConsumerWidget {
                             height: 80,
                           ),
                           const SizedBox(height: AppSpacings.elementSpacing),
-                          OkepointTexts.headingBig("Find your friends and Family on a Map", context, center: true),
-                          const SizedBox(height: AppSpacings.elementSpacing),
-                          CardPadding(
-                            child: OkepointTexts.bodyText(
-                              "Select mode & start sharing your location with your firends or family members.",
-                              context,
-                              center: true,
-                            ),
+                          Column(
+                            children: [
+                              OkepointTexts.headingBig(
+                                "Find your friends and Family on a Map",
+                                context,
+                                center: true,
+                              ),
+                              const SizedBox(height: AppSpacings.elementSpacing),
+                              CardPadding(
+                                child: OkepointTexts.bodyText(
+                                  "Select mode & start sharing your location with your firends or family members.",
+                                  context,
+                                  center: true,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: AppSpacings.cardPadding * 2),
                           ListView.builder(
@@ -56,7 +64,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(top: AppSpacings.elementSpacing),
                                   child: LinkedText(
-                                    link: "Add Custom Emergency",
+                                    link: "Add Emergency",
                                     onLinkTap: () {},
                                   ),
                                 );
@@ -66,11 +74,11 @@ class ShareLocationViewWidget extends ConsumerWidget {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(15),
                                   onTap: () {
-                                    ref.watch(selectedEmergencyProvider.notifier).state = emergencies[index].type;
+                                    ref.watch(selectedEmergencyProvider.notifier).state = emergencies[index];
                                   },
                                   child: EmergencyCard(
                                     emergency: emergencies[index],
-                                    selected: selectedEmergencyId == emergencies[index].type,
+                                    selected: selectedEmergencyId?.type == emergencies[index].type,
                                   ),
                                 ),
                               );

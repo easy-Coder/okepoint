@@ -11,6 +11,8 @@ class Contact {
   final int createdAt;
   final int updatedAt;
 
+  String get displayName => info["name"] ?? "";
+
   const Contact({
     required this.id,
     required this.uid,

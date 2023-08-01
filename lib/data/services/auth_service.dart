@@ -13,6 +13,7 @@ enum SocialAuthProvider { apple, google }
 
 abstract class SocialAuthService {
   final googleIn = GoogleSignIn();
+
   Future<UserCredential?> signInWithApple();
   Future<UserCredential?> signInWithGoogle();
 }

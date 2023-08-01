@@ -46,21 +46,20 @@ class EmergencyCard extends StatelessWidget {
                   emergency.subtitle,
                   context,
                   color: selected ? AppColors.white : null,
+                  fontWeight: FontWeight.w300,
+                  maxLines: 2,
                 ),
               ],
             ),
           ),
           if (selected)
             InkWell(
-              onTap: () {
-                showCupertinoModelBottomSheet(
-                  context: context,
-                  useRootNavigator: true,
-                  builder: (context) => AddEditEmergencyContactsViewMobile(
-                    emergency: emergency,
-                  ),
-                );
-              },
+              onTap: () => showCupertinoModelBottomSheet(
+                context: context,
+                useRootNavigator: true,
+                barrierColor: Theme.of(context).cardColor.withOpacity(.8),
+                builder: (context) => const AddEditEmergencyContactsViewMobile(),
+              ),
               child: Icon(
                 CupertinoIcons.add_circled_solid,
                 color: (selected ? AppColors.white : Theme.of(context).unselectedWidgetColor).lighten(0.2),

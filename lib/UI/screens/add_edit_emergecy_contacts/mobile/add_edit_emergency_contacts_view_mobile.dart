@@ -4,57 +4,65 @@ import 'package:go_router/go_router.dart';
 import 'package:okepoint/UI/components/cards/paddings.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/screens/add_edit_contact/mobile/add_edit_contact_view_mobile.dart';
+import 'package:okepoint/UI/screens/add_edit_emergecy_contacts/add_edit_emergecy_contacts_state.dart';
+import 'package:okepoint/UI/screens/share_location/share_location_state.dart';
 import 'package:okepoint/UI/theme/spacings.dart';
-import 'package:okepoint/data/models/emergency.dart';
 
 import '../../../components/buttons/linked_text.dart';
 import '../../../components/buttons/primary_button.dart';
 import '../../../components/models/cupertino_model.dart';
 
 class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
-  final Emergency emergency;
   const AddEditEmergencyContactsViewMobile({
     super.key,
-    required this.emergency,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final emergency = ref.read(selectedEmergencyProvider);
+    if (emergency == null) return const SizedBox.shrink();
+
+    final contacts = ref.watch(addEditEmergencyContactsProvider.call(emergency));
+
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: AppSpacings.cardPadding),
+          const SizedBox(height: AppSpacings.cardPadding * 0.8),
           CardPadding(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                OkepointTexts.subHeading(
+                OkepointTexts.headingSmall(
                   "Emergency contacts",
                   context,
                 ),
                 LinkedText(
                   link: "Close",
-                  textColor: Theme.of(context).colorScheme.error,
+                  textColor: Theme.of(context).iconTheme.color,
                   onLinkTap: () => context.pop(),
-                )
+                ),
               ],
             ),
           ),
-          const SizedBox(height: AppSpacings.cardPadding),
+          const SizedBox(height: AppSpacings.cardPadding * 0.8),
           const Divider(height: 0),
           Expanded(
             child: CardPadding(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacings.cardPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: AppSpacings.cardPadding),
-                    OkepointTexts.headingSmall(
-                      emergency.title,
-                      context,
-                      fontWeight: FontWeight.w600,
+                    Padding(
+                      padding: const EdgeInsets.only(right: AppSpacings.cardPadding),
+                      child: OkepointTexts.headingSmall(
+                        emergency.title,
+                        context,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                    const SizedBox(height: AppSpacings.cardPadding * 2),
+                    const SizedBox(height: AppSpacings.cardPadding),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -63,7 +71,7 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacings.elementSpacing),
                     GridView.builder(
-                      itemCount: 2,
+                      itemCount: contacts.length + 1,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -74,15 +82,13 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return InkWell(
-                            onTap: () {
-                              showCupertinoModelBottomSheet(
-                                context: context,
-                                useRootNavigator: true,
-                                enableDrag: false,
-                                isDismissible: false,
-                                builder: (context) => const AddEditContactViewMobile(),
-                              );
-                            },
+                            onTap: () => showCupertinoModelBottomSheet(
+                              context: context,
+                              useRootNavigator: true,
+                              enableDrag: false,
+                              isDismissible: false,
+                              builder: (context) => const AddEditContactViewMobile(),
+                            ),
                             child: CircleAvatar(
                               backgroundColor: Theme.of(context).cardColor,
                               child: Icon(
@@ -93,6 +99,8 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                             ),
                           );
                         }
+
+                        final contact = contacts[index - 1];
 
                         return Stack(
                           clipBehavior: Clip.none,
@@ -107,7 +115,7 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                               bottom: -(AppSpacings.cardPadding),
                               child: Center(
                                 child: OkepointTexts.callout(
-                                  "Jeremiah",
+                                  contact.displayName,
                                   context,
                                   maxLines: 1,
                                 ),
