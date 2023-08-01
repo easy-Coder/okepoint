@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/data/models/user/contact.dart';
 import 'package:okepoint/data/models/user/user.dart';
 import 'package:okepoint/data/services/auth_service.dart';
 
@@ -14,6 +17,8 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
   final Ref ref;
 
   bool _launchSetUp = true;
+
+  StreamSubscription? _userContactsSubscription;
 
   AuthService get _authService => ref.read(authServiceProvider);
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
@@ -78,14 +83,29 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
       _userRepository.listenToCurrentUser(user.uid, onUserUpdate: (user) {
         updateUser = user;
       });
+      _listenToUserContacts(user);
     }
 
     _mapService.getUserCurrentPosition();
   }
 
+  _listenToUserContacts(User user) {
+    _cancelUserContactsSubscriptions();
+    _userContactsSubscription = _userRepository.userContactQuery(user.uid).snapshots().listen((query) {
+      _userRepository.userContactsNotifier.value = query.docs.map((e) => Contact.fromMap(e.data() as Map<String, dynamic>)).toList();
+    });
+  }
+
+  void _cancelUserContactsSubscriptions() {
+    _userContactsSubscription?.cancel();
+    _userContactsSubscription = null;
+  }
+
   Future<void> _appStartUserAvailable(User user) async {}
 
-  Future<void> _clearUserCachedData() async {}
+  Future<void> _clearUserCachedData() async {
+    _cancelUserContactsSubscriptions();
+  }
 
   Future<void> logout() async {
     final result = await _authService.signOut();

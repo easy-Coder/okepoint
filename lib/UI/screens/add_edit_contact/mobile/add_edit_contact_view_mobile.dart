@@ -11,11 +11,25 @@ import '../../../components/cards/paddings.dart';
 import '../../../components/texts/texts.dart';
 import '../../../theme/spacings.dart';
 
-class AddEditContactViewMobile extends ConsumerWidget {
-  const AddEditContactViewMobile({super.key});
+class AddEditContactViewMobile extends ConsumerStatefulWidget {
+  final String? contactId;
+  const AddEditContactViewMobile({super.key, this.contactId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddEditContactViewMobileState();
+}
+
+class _AddEditContactViewMobileState extends ConsumerState<AddEditContactViewMobile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(selectContactProvider.notifier).state = widget.contactId;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final contactId = ref.watch(selectContactProvider);
     final state = ref.watch(addEditContactStateProvider.call(contactId));
 
@@ -31,7 +45,7 @@ class AddEditContactViewMobile extends ConsumerWidget {
                   const CloseButton(),
                   const SizedBox(width: AppSpacings.elementSpacing),
                   OkepointTexts.headingSmall(
-                    "Add contact",
+                    state.isEdittingContact ? "Edit Contact" : "Add contact",
                     context,
                   ),
                   const Spacer(),
@@ -121,7 +135,7 @@ class AddEditContactViewMobile extends ConsumerWidget {
                                     child: OkepointTexts.bodyText(e, context),
                                   ))
                               .toList(),
-                          onChanged: (v) {},
+                          onChanged: (v) => state.selectContactType(v!),
                         ),
                       ),
                       const SizedBox(height: AppSpacings.cardPadding * 2),

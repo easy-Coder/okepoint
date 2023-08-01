@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:okepoint/UI/components/avaters/profile_avater.dart';
+import 'package:okepoint/UI/components/cards/list_tile.dart';
 import 'package:okepoint/UI/components/cards/paddings.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/screens/add_edit_contact/mobile/add_edit_contact_view_mobile.dart';
@@ -49,98 +51,94 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
           const SizedBox(height: AppSpacings.cardPadding * 0.8),
           const Divider(height: 0),
           Expanded(
-            child: CardPadding(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacings.cardPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacings.cardPadding),
-                      child: OkepointTexts.headingSmall(
-                        emergency.title,
-                        context,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).primaryColor,
-                      ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppSpacings.cardPadding,
+                horizontal: AppSpacings.cardPadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: AppSpacings.cardPadding),
+                    child: OkepointTexts.headingSmall(
+                      emergency.title,
+                      context,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
                     ),
-                    const SizedBox(height: AppSpacings.cardPadding),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        OkepointTexts.subHeading("Contacts", context),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacings.elementSpacing),
-                    GridView.builder(
-                      itemCount: contacts.length + 1,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: AppSpacings.cardPadding * 1.5,
-                        crossAxisSpacing: AppSpacings.elementSpacing,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return InkWell(
-                            onTap: () async {
-                              final contact = await showCupertinoModelBottomSheet<Contact?>(
-                                context: context,
-                                useRootNavigator: true,
-                                enableDrag: false,
-                                isDismissible: false,
-                                builder: (context) => const AddEditContactViewMobile(),
-                              );
+                  ),
+                  const SizedBox(height: AppSpacings.cardPadding * 2),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      OkepointTexts.subHeading("Contacts", context),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacings.elementSpacing),
+                  ListView.builder(
+                    itemCount: contacts.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final contact = contacts[index];
 
-                              if (contact != null) notifier.addContactToEmergency(contact);
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: Theme.of(context).cardColor,
-                              child: Icon(
-                                Icons.add,
-                                color: Theme.of(context).iconTheme.color,
-                                size: 30,
-                              ),
+                      return InkWell(
+                        onTap: () async {
+                          await showCupertinoModelBottomSheet<Contact?>(
+                            context: context,
+                            useRootNavigator: true,
+                            enableDrag: false,
+                            isDismissible: false,
+                            builder: (context) => AddEditContactViewMobile(
+                              contactId: contact.id,
                             ),
                           );
-                        }
-
-                        final contact = contacts[index - 1];
-
-                        return Stack(
-                          clipBehavior: Clip.none,
-                          fit: StackFit.expand,
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Theme.of(context).cardColor,
-                            ),
-                            Positioned(
-                              left: 15,
-                              right: 15,
-                              bottom: -(AppSpacings.cardPadding),
-                              child: Center(
-                                child: OkepointTexts.callout(
-                                  contact.displayName,
-                                  context,
-                                  maxLines: 1,
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
+                          child: OkeListTile(
+                            title: Row(
+                              children: [
+                                ContactAvatar(contact: contact),
+                                const SizedBox(width: AppSpacings.elementSpacing),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      OkepointTexts.subHeading(contact.displayName, context),
+                                      const SizedBox(height: AppSpacings.elementSpacing * 0.5),
+                                      OkepointTexts.bodyText(contact.phone, context),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        );
-                      },
-                    )
-                  ],
-                ),
+                            trailing: const Icon(Icons.arrow_forward_ios, size: 13),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ],
               ),
             ),
           ),
           CardPadding(
             child: OkepointPrimaryButton(
-              title: "Start Sharing",
-              state: ButtonState.initial,
-              onPressed: () {},
+              color: Theme.of(context).cardColor,
+              title: "Add New Contact",
+              onPressed: () async {
+                final contact = await showCupertinoModelBottomSheet<Contact?>(
+                  context: context,
+                  useRootNavigator: true,
+                  enableDrag: false,
+                  isDismissible: false,
+                  builder: (context) => const AddEditContactViewMobile(),
+                );
+
+                if (contact != null) notifier.addContactToEmergency(contact);
+              },
             ),
           ),
           SizedBox(height: AppSpacings.cardPadding * 2 + MediaQuery.paddingOf(context).bottom),

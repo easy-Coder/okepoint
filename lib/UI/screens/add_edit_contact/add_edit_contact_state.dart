@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/data/models/user/contact.dart';
 import 'package:okepoint/utils/useful_methods.dart';
 
-final selectContactProvider = Provider.autoDispose<String?>((ref) {
+import '../../../data/states/contacts_state.dart';
+
+final selectContactProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
 });
 
@@ -33,7 +35,17 @@ class AddEditContactState extends ChangeNotifier {
     getContact();
   }
 
-  Future<void> getContact() async {}
+  Future<void> getContact() async {
+    try {
+      final contacts = ref.watch(contactsStateProvider);
+      contact = contacts.firstWhere((element) => element.id == contactId);
+      if (contact == null) return;
+      nameController.text = contact!.displayName;
+      phoneController.text = contact!.phone;
+
+      notifyListeners();
+    } catch (_) {}
+  }
 
   void selectContactType(String value) {
     contactTypeController.text = value;
@@ -47,14 +59,14 @@ class AddEditContactState extends ChangeNotifier {
     info["name"] = nameController.text.trim();
     info["phone"] = phoneController.text.trim();
     info["email"] = emailController.text.trim();
-    info["type"] = contactTypeController.text.trim();
+    info["type"] = contactTypeController.text.trim().toLowerCase();
     info["note"] = noteController.text.trim();
 
     final newContact = Contact(
-      id: "",
+      id: Contact.generatedId,
       uid: '',
       info: info,
-      emergencyTypes: [],
+      emergencyTypes: <String>[],
       createdAt: utcTimeNow,
       updatedAt: utcTimeNow,
     );

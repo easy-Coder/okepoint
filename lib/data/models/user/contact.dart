@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:okepoint/utils/useful_methods.dart';
 
 class Contact {
   final String id;
@@ -12,6 +13,11 @@ class Contact {
   final int updatedAt;
 
   String get displayName => info["name"] ?? "";
+  String get phone => info["phone"] ?? "";
+
+  String get profileImageUrl => info['profileImageUrl'] ?? "";
+
+  static String get generatedId => generate16DigitIds("contact");
 
   const Contact({
     required this.id,
@@ -55,8 +61,8 @@ class Contact {
     return Contact(
       id: map['id'] as String,
       uid: map['uid'] as String,
-      info: Map<String, dynamic>.from(map['info'] as Map<String, dynamic>),
-      emergencyTypes: List<String>.from(map['emergencyTypes'] as List<String>),
+      info: Map<String, dynamic>.from(map['info'] ?? {}),
+      emergencyTypes: List<String>.from(map['emergencyTypes'] ?? []),
       createdAt: map['createdAt'] as int,
       updatedAt: map['updatedAt'] as int,
     );

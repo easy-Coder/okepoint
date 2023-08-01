@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:okepoint/data/models/user/contact.dart';
 import 'package:okepoint/data/models/user/user.dart';
 
 class ProfileAvatar extends StatelessWidget {
@@ -33,6 +34,20 @@ class ProfileAvatar extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class ContactAvatar extends StatelessWidget {
+  final Contact contact;
+  const ContactAvatar({super.key, required this.contact});
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 30,
+      backgroundColor: Theme.of(context).canvasColor,
+      backgroundImage: NetworkImage(contact.profileImageUrl),
     );
   }
 }

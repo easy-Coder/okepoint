@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/user/contact.dart';
 import '../models/user/user.dart';
 import 'package:okepoint/utils/useful_methods.dart';
 
@@ -18,6 +19,7 @@ class UserRepository {
   final _userFirestore = FirebaseFirestore.instance.collection(DBCollectionPath.users);
 
   final ValueNotifier<User?> currentUserNotifier = ValueNotifier<User?>(null);
+  final ValueNotifier<List<Contact>> userContactsNotifier = ValueNotifier<List<Contact>>([]);
 
   StreamSubscription? _userSubscription;
 
@@ -120,6 +122,20 @@ class UserRepository {
       debugPrint(e.toString());
     }
     return null;
+  }
+
+  Query userContactQuery(String uid) {
+    return _userFirestore.doc(uid).collection("contacts");
+  }
+
+  Future<bool> createContact(String userId, Contact contact) async {
+    try {
+      await _userFirestore.doc(userId).collection("contacts").doc(contact.id).set(contact.toMap());
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return false;
   }
 
   void clearUserSubscription() {

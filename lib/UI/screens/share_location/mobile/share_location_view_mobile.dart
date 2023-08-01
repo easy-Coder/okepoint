@@ -4,6 +4,7 @@ import 'package:okepoint/UI/components/buttons/linked_text.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/screens/share_location/share_location_state.dart';
 import 'package:okepoint/constants/image_paths.dart';
+import 'package:okepoint/data/states/contacts_state.dart';
 
 import '../../../../data/services/remote_config_service.dart';
 import '../../../components/buttons/primary_button.dart';
@@ -19,6 +20,8 @@ class ShareLocationViewWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final emergencies = ref.read(remoteConfigServiceProvider).appEmergencies;
     final selectedEmergencyId = ref.watch(selectedEmergencyProvider);
+
+    final contacts = ref.watch(contactsStateProvider);
 
     return Scaffold(
       body: SafeArea(
