@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:okepoint/UI/screens/map_view/web/map_view.dart';
 
-import 'package:okepoint/UI/screens/share_location/mobile/share_location_view.dart';
+import 'package:okepoint/UI/screens/share_location/mobile/share_location_view_mobile.dart';
 import 'package:okepoint/constants/app_routes.dart';
 
-import '../../UI/screens/profile/mobile/user_profile.dart';
+import '../../UI/screens/map_view/web/map_view_web.dart';
+import '../../UI/screens/profile/mobile/user_profile_mobile.dart';
 import '../../UI/screens/tab_wrapper/tab_wrapper.dart';
 
 final navigationServiceProvider = Provider<NavigationService>((ref) {

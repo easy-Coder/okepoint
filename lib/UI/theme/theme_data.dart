@@ -40,7 +40,7 @@ class AppThemeData {
     indicatorColor: AppColors.white,
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.all(AppColors.cardDark),
-      splashRadius: 16,
+      splashRadius: AppSpacings.cardPadding,
     ),
     iconTheme: const IconThemeData(
       color: AppColors.iconLight,
@@ -71,14 +71,12 @@ class AppThemeData {
       iconColor: AppColors.black,
       border: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
           color: AppColors.dividerLight,
         ),
       ),
       focusColor: AppColors.white,
       enabledBorder: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
           color: AppColors.dividerLight,
         ),
       ),
@@ -86,13 +84,12 @@ class AppThemeData {
       focusedErrorBorder: AppSpacings.errorLineBorder,
       focusedBorder: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
-          color: AppColors.dividerLight,
+          color: AppColors.primaryColor,
         ),
       ),
       disabledBorder: AppSpacings.disabledOutLineBorder,
       isDense: true,
-      contentPadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(AppSpacings.cardPadding),
     ),
     primaryIconTheme: const IconThemeData(
       color: AppColors.black,
@@ -142,7 +139,7 @@ class AppThemeData {
     canvasColor: AppColors.cardDark2,
     radioTheme: RadioThemeData(
       fillColor: MaterialStateProperty.all(AppColors.cardLight),
-      splashRadius: 16,
+      splashRadius: AppSpacings.cardPadding,
     ),
     iconTheme: const IconThemeData(
       color: AppColors.white,
@@ -174,27 +171,24 @@ class AppThemeData {
       helperStyle: AppTextThemes.mobileTextThemeDark.bodyMedium,
       border: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
           color: AppColors.dividerDark,
         ),
       ),
       focusColor: AppColors.white,
       enabledBorder: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
           color: AppColors.dividerDark,
         ),
       ),
       errorBorder: AppSpacings.errorLineBorder,
       focusedBorder: AppSpacings.outLineBorder.copyWith(
         borderSide: const BorderSide(
-          width: 1.5,
-          color: AppColors.dividerDark,
+          color: AppColors.primaryColor,
         ),
       ),
       disabledBorder: AppSpacings.disabledOutLineBorder,
       isDense: true,
-      contentPadding: const EdgeInsets.all(16),
+      contentPadding: const EdgeInsets.all(AppSpacings.cardPadding),
     ),
     primaryIconTheme: const IconThemeData(
       color: AppColors.white,

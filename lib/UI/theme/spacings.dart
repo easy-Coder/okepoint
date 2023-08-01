@@ -31,15 +31,15 @@ class AppSpacings {
 
   static const OutlineInputBorder outLineBorder = OutlineInputBorder(
     borderRadius: defaultBorderRadiusTextField,
-    borderSide: BorderSide(color: AppColors.dividerLight, width: 1.5),
+    borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5),
   );
 
   static const OutlineInputBorder disabledOutLineBorder = OutlineInputBorder(
     borderRadius: defaultBorderRadiusTextField,
-    borderSide: BorderSide(color: AppColors.white, width: 1.5),
+    borderSide: BorderSide(color: AppColors.white, width: 1.2),
   );
   static const OutlineInputBorder errorLineBorder = OutlineInputBorder(
     borderRadius: defaultBorderRadiusTextField,
-    borderSide: BorderSide(color: AppColors.red, width: 1.5),
+    borderSide: BorderSide(color: AppColors.red, width: 1.2),
   );
 }

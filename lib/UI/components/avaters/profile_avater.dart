@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:okepoint/data/models/user.dart';
+import 'package:okepoint/data/models/user/user.dart';
 
 class ProfileAvatar extends StatelessWidget {
   final User user;

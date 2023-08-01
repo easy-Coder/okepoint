@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:okepoint/data/models/user.dart';
+import 'package:okepoint/data/models/user/user.dart';
 import 'package:okepoint/data/services/auth_service.dart';
 
 import '../repositories/user_repository.dart';

@@ -32,6 +32,8 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.2
+  modal_bottom_sheet: ^3.0.0-pre
+
 
   # local storage
   shared_preferences: ^2.2.0

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:okepoint/utils/extentions/primary_extensions.dart';
 
 import '../../../data/models/emergency.dart';
+import '../../screens/add_edit_emergecy_contacts/mobile/add_edit_emergency_contacts_view_mobile.dart';
 import '../../theme/colors.dart';
 import '../../theme/spacings.dart';
+import '../models/cupertino_model.dart';
 import '../texts/texts.dart';
 
 class EmergencyCard extends StatelessWidget {
@@ -49,10 +51,21 @@ class EmergencyCard extends StatelessWidget {
             ),
           ),
           if (selected)
-            Icon(
-              CupertinoIcons.add_circled_solid,
-              color: (selected ? AppColors.white : Theme.of(context).unselectedWidgetColor).lighten(0.2),
-              size: 30,
+            InkWell(
+              onTap: () {
+                showCupertinoModelBottomSheet(
+                  context: context,
+                  useRootNavigator: true,
+                  builder: (context) => AddEditEmergencyContactsViewMobile(
+                    emergency: emergency,
+                  ),
+                );
+              },
+              child: Icon(
+                CupertinoIcons.add_circled_solid,
+                color: (selected ? AppColors.white : Theme.of(context).unselectedWidgetColor).lighten(0.2),
+                size: 30,
+              ),
             ),
         ],
       ),

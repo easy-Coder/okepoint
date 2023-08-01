@@ -33,7 +33,7 @@ class _LinkedTextState extends State<LinkedText> {
 
   @override
   Widget build(BuildContext context) {
-    final style = (widget.style ?? Theme.of(context).textTheme.bodyMedium);
+    final style = (widget.style ?? Theme.of(context).textTheme.bodyLarge);
     final color = widget.disable ? Theme.of(context).unselectedWidgetColor : (widget.textColor ?? Theme.of(context).primaryColor).lighten(isHover ? 0.1 : 0);
 
     return Center(
