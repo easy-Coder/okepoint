@@ -49,6 +49,7 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
       case AppLifecycleState.paused:
+        debugPrint("START PAUSED");
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         break;

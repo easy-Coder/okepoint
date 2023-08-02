@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:okepoint/UI/components/avaters/profile_avater.dart';
-import 'package:okepoint/UI/components/cards/list_tile.dart';
 import 'package:okepoint/UI/components/cards/paddings.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/screens/add_edit_contact/mobile/add_edit_contact_view_mobile.dart';
@@ -13,6 +11,7 @@ import 'package:okepoint/data/models/user/contact.dart';
 
 import '../../../components/buttons/linked_text.dart';
 import '../../../components/buttons/primary_button.dart';
+import '../../../components/cards/contact.dart';
 import '../../../components/models/cupertino_model.dart';
 
 class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
@@ -42,7 +41,7 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
                 ),
                 LinkedText(
                   link: "Close",
-                  textColor: Theme.of(context).iconTheme.color,
+                  textColor: Theme.of(context).primaryColor,
                   onLinkTap: () => context.pop(),
                 ),
               ],
@@ -50,83 +49,78 @@ class AddEditEmergencyContactsViewMobile extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacings.cardPadding * 0.8),
           const Divider(height: 0),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacings.cardPadding,
-                horizontal: AppSpacings.cardPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: AppSpacings.cardPadding),
-                    child: OkepointTexts.headingSmall(
-                      emergency.title,
-                      context,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacings.cardPadding * 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      OkepointTexts.subHeading("Contacts", context),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacings.elementSpacing),
-                  ListView.builder(
-                    itemCount: contacts.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final contact = contacts[index];
-
-                      return InkWell(
-                        onTap: () async {
-                          await showCupertinoModelBottomSheet<Contact?>(
-                            context: context,
-                            useRootNavigator: true,
-                            enableDrag: false,
-                            isDismissible: false,
-                            builder: (context) => AddEditContactViewMobile(
-                              contactId: contact.id,
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
-                          child: OkeListTile(
-                            title: Row(
-                              children: [
-                                ContactAvatar(contact: contact),
-                                const SizedBox(width: AppSpacings.elementSpacing),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      OkepointTexts.subHeading(contact.displayName, context),
-                                      const SizedBox(height: AppSpacings.elementSpacing * 0.5),
-                                      OkepointTexts.bodyText(contact.phone, context),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            trailing: const Icon(Icons.arrow_forward_ios, size: 13),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                ],
-              ),
+          const SizedBox(height: AppSpacings.cardPadding),
+          CardPadding(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                OkepointTexts.headingSmall(
+                  emergency.title,
+                  context,
+                  fontWeight: FontWeight.w600,
+                ),
+                const SizedBox(height: AppSpacings.elementSpacing),
+                OkepointTexts.bodyText(
+                  emergency.subtitle,
+                  context,
+                ),
+              ],
             ),
+          ),
+          const SizedBox(height: AppSpacings.cardPadding),
+          Expanded(
+            child: Builder(builder: (context) {
+              if (contacts.isEmpty) {
+                return Center(
+                  child: OkepointTexts.callout(
+                    "No contacts to show",
+                    context,
+                  ),
+                );
+              }
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacings.cardPadding,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    OkepointTexts.subHeading("Contacts", context),
+                    const SizedBox(height: AppSpacings.elementSpacing),
+                    ListView.builder(
+                      itemCount: contacts.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final contact = contacts[index];
+
+                        return InkWell(
+                          onTap: () async {
+                            await showCupertinoModelBottomSheet<Contact?>(
+                              context: context,
+                              useRootNavigator: true,
+                              enableDrag: false,
+                              isDismissible: false,
+                              builder: (context) => AddEditContactViewMobile(
+                                contactId: contact.id,
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacings.elementSpacing),
+                            child: ContactCard(contact: contact),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }),
           ),
           CardPadding(
             child: OkepointPrimaryButton(
-              color: Theme.of(context).cardColor,
+              color: Theme.of(context).primaryColor,
               title: "Add New Contact",
               onPressed: () async {
                 final contact = await showCupertinoModelBottomSheet<Contact?>(

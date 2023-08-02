@@ -1,42 +1,24 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:okepoint/data/services/map_service.dart';
 
 import '../components/info_window.dart';
+import '../map_view_state.dart';
 
-class MapView extends ConsumerStatefulWidget {
+class MapView extends ConsumerWidget {
   const MapView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MapViewState();
-}
+  Widget build(BuildContext context, ref) {
+    final state = ref.watch(mapViewStateProvider);
 
-class _MapViewState extends ConsumerState<MapView> {
-  late Completer<GoogleMapController> mapController;
-  late CustomInfoWindowController infoWindowController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    infoWindowController = CustomInfoWindowController();
-    mapController = Completer<GoogleMapController>();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final state = ref.watch(mapServiceProvider);
     return ListenableBuilder(
         listenable: Listenable.merge([
-          state.currentUserLocationPointNotifier,
-          state.destinationLocationPointNotifier,
+          state.currentUserLocationPoint,
           state.mapMarkers,
         ]),
         builder: (context, _) {
-          final currentLocation = state.currentUserLocationPointNotifier.value;
+          final currentLocation = state.currentUserLocationPoint.value;
           if (currentLocation == null) return const SizedBox.shrink();
           final markers = state.mapMarkers.value;
 
@@ -50,15 +32,15 @@ class _MapViewState extends ConsumerState<MapView> {
                   zoom: 15,
                 ),
                 markers: markers,
-                onTap: (_) => infoWindowController.hideInfoWindow!(),
+                onTap: (_) => state.infoWindowController.hideInfoWindow!(),
                 onMapCreated: (GoogleMapController controller) {
-                  mapController.complete(controller);
+                  state.mapController.complete(controller);
 
-                  infoWindowController.googleMapController = controller;
+                  state.infoWindowController.googleMapController = controller;
                 },
               ),
               CustomInfoWindow(
-                controller: infoWindowController,
+                controller: state.infoWindowController,
                 height: MediaQuery.of(context).size.width * 0.12,
                 width: MediaQuery.of(context).size.width * 0.4,
                 offset: 50,

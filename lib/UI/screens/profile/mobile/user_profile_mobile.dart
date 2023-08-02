@@ -44,7 +44,7 @@ class UserProfileWiget extends ConsumerWidget {
                       ),
                       const SizedBox(height: AppSpacings.elementSpacing),
                       ProfileAvatar(
-                        user: user,
+                        url: user.profileImageUrl,
                         onPickImage: (File file) {},
                       ),
                     ],

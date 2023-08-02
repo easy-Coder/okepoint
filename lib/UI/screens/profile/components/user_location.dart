@@ -6,7 +6,7 @@ import 'package:okepoint/UI/components/cards/paddings.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/UI/theme/spacings.dart';
 
-import '../../../../data/models/point.dart';
+import '../../../../data/models/location/point.dart';
 import '../../../../data/services/map_service.dart';
 import '../../../components/cards/list_tile.dart';
 
