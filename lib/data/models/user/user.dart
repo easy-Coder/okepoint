@@ -35,6 +35,13 @@ class User {
 
   String get displayName => "$firstName $lastName";
 
+  Map<String, dynamic> get miniUserData => {
+        "uid": uid,
+        "profileImageUrl": profileImageUrl,
+        "email": email,
+        "name": "$firstName $lastName",
+      };
+
   User copyWith({
     String? uid,
     String? email,

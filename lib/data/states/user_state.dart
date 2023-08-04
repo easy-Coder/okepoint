@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/data/models/emergency.dart';
+import 'package:okepoint/data/models/location/point.dart';
 import 'package:okepoint/data/models/user/contact.dart';
 import 'package:okepoint/data/models/user/user.dart';
 import 'package:okepoint/data/services/auth_service.dart';
+import 'package:okepoint/utils/useful_methods.dart';
 
+import '../models/location/shared_location.dart';
+import '../repositories/shared_location_respository.dart';
 import '../repositories/user_repository.dart';
 import '../services/map_service.dart';
 
@@ -18,11 +23,13 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
 
   bool _launchSetUp = true;
 
+  Timer? _timer;
   StreamSubscription? _userContactsSubscription;
 
   AuthService get _authService => ref.read(authServiceProvider);
   UserRepository get _userRepository => ref.read(userRepositoryProvider);
   MapService get _mapService => ref.read(mapServiceProvider);
+  SharedLocationRepository get _sharedLocationRepo => ref.read(sharedLocationProvider);
 
   ValueNotifier<User?> get currentUser => _userRepository.currentUserNotifier;
 
@@ -64,6 +71,8 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  Future<void> _appStartUserAvailable(User user) async {}
+
   Future<void> _fetchUserDocuments(String uid) async {
     await _userRepository.getCurrentUser(uid);
     updateUser = _userRepository.currentUserNotifier.value;
@@ -97,12 +106,42 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     });
   }
 
+  Future<void> updateCurrentUserSharedLocation(Emergency emergency, {LocationPoint? location}) async {
+    final User? user = currentUser.value;
+
+    if (user == null || location == null) return;
+
+    if (_timer?.isActive == false) {
+      _cancelLocationTimer();
+
+      _timer = Timer(const Duration(seconds: 15), () {
+        /// trigger code
+        final sharedLocation = SharedLocation(
+          id: "",
+          createdBy: user.miniUserData,
+          startLocation: location,
+          lastLocation: location,
+          emergencyType: emergency.type,
+          duration: timeStampNow.add(const Duration(hours: 48)).millisecondsSinceEpoch,
+          createdAt: timeStampNow.millisecondsSinceEpoch,
+          updatedAt: timeStampNow.millisecondsSinceEpoch,
+        );
+
+        _sharedLocationRepo.sharedLocation(user.uid, sharedLocation);
+        _cancelLocationTimer();
+      });
+    }
+  }
+
+  void _cancelLocationTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
   void _cancelUserContactsSubscriptions() {
     _userContactsSubscription?.cancel();
     _userContactsSubscription = null;
   }
-
-  Future<void> _appStartUserAvailable(User user) async {}
 
   Future<void> _clearUserCachedData() async {
     _cancelUserContactsSubscriptions();

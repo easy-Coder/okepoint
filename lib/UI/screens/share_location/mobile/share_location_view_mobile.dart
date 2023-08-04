@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:okepoint/UI/components/texts/texts.dart';
 import 'package:okepoint/data/services/map_service.dart';
 import 'package:okepoint/data/states/contacts_state.dart';
+import 'package:okepoint/data/states/user_state.dart';
 
 import '../../../components/buttons/primary_button.dart';
 import '../../../components/cards/blur.dart';
@@ -23,6 +24,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
 
     final contacts = ref.watch(contactsStateProvider);
     final selectedEmergency = ref.watch(selectedEmergencyProvider);
+    final userNotifier = ref.read(userStateProvider.notifier);
 
     return Scaffold(
       body: SafeArea(
@@ -102,9 +104,13 @@ class ShareLocationViewWidget extends ConsumerWidget {
                           mapService.cancelRealtimeLocationShare();
                           return;
                         }
-                        mapService.shareLocationRealtime((location) {
-                          print(location);
-                        });
+
+                        mapService.shareLocationRealtime(
+                          (location) => userNotifier.updateCurrentUserSharedLocation(
+                            selectedEmergency!,
+                            location: location,
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(height: AppSpacings.cardPadding),

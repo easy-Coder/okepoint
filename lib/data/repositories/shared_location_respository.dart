@@ -20,4 +20,13 @@ class SharedLocationRepository {
         .withConverter(fromFirestore: (data, options) => SharedLocation.fromMap(data.data() as Map<String, dynamic>), toFirestore: (data, options) => data.toMap())
         .snapshots();
   }
+
+  Future<bool> sharedLocation(String uid, SharedLocation location) async {
+    try {
+      await _sharedLocationFirestore.doc(location.id).set(location.toMap());
+      return true;
+    } catch (e) {}
+
+    return false;
+  }
 }
