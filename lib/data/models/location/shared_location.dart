@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:okepoint/data/models/location/point.dart';
 
+import '../../../utils/useful_methods.dart';
+
 class SharedLocation {
   final String id;
   final Map<String, dynamic> createdBy;
@@ -25,6 +27,8 @@ class SharedLocation {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  static String get generatedId => generate16DigitIds("sl");
 
   SharedLocation copyWith({
     String? id,

@@ -15,9 +15,11 @@ class User {
 
   final Map<String, dynamic> homePreferences;
   final Map<String, dynamic> settings;
+  final Map<String, dynamic> currentSharedLocation;
 
   final int createdAt;
   final int updatedAt;
+
   User({
     required this.uid,
     required this.email,
@@ -28,12 +30,15 @@ class User {
     required this.verified,
     required this.active,
     required this.homePreferences,
+    required this.currentSharedLocation,
     required this.settings,
     required this.createdAt,
     required this.updatedAt,
   });
 
   String get displayName => "$firstName $lastName";
+  String get currentSharedLocationId => currentSharedLocation["id"] ?? "";
+  String get currentSharedLocationEmergencyType => currentSharedLocation["emergencyType"] ?? "";
 
   Map<String, dynamic> get miniUserData => {
         "uid": uid,
@@ -53,6 +58,7 @@ class User {
     bool? active,
     Map<String, dynamic>? homePreferences,
     Map<String, dynamic>? settings,
+    Map<String, dynamic>? currentSharedLocation,
     int? createdAt,
     int? updatedAt,
   }) {
@@ -66,6 +72,7 @@ class User {
       verified: verified ?? this.verified,
       active: active ?? this.active,
       homePreferences: homePreferences ?? this.homePreferences,
+      currentSharedLocation: currentSharedLocation ?? this.currentSharedLocation,
       settings: settings ?? this.settings,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -83,6 +90,7 @@ class User {
       'verified': verified,
       'active': active,
       'homePreferences': homePreferences,
+      'currentSharedLocation': currentSharedLocation,
       'settings': settings,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
@@ -99,8 +107,9 @@ class User {
       profileImageUrl: map['profileImageUrl'] as String,
       verified: map['verified'] as bool,
       active: map['active'] as bool,
-      homePreferences: Map<String, dynamic>.from(map['homePreferences'] as Map<String, dynamic>),
-      settings: Map<String, dynamic>.from(map['settings'] as Map<String, dynamic>),
+      homePreferences: Map<String, dynamic>.from(map['homePreferences'] ?? {}),
+      currentSharedLocation: Map<String, dynamic>.from(map['currentSharedLocation'] ?? {}),
+      settings: Map<String, dynamic>.from(map['settings'] ?? {}),
       createdAt: map['createdAt'] as int,
       updatedAt: map['updatedAt'] as int,
     );

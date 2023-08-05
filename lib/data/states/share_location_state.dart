@@ -17,7 +17,6 @@ class SharedLocationState extends StateNotifier<SharedLocation?> {
   final Ref ref;
 
   StreamSubscription? _sharedLocationSubscription;
-
   ValueNotifier<SharedLocation?> shareLocationNotifier = ValueNotifier<SharedLocation?>(null);
 
   SharedLocationRepository get _sharedLocationRepo => ref.read(sharedLocationProvider);

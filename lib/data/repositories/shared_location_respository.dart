@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:okepoint/data/models/emergency.dart';
+import 'package:okepoint/data/models/location/point.dart';
 import 'package:okepoint/data/models/location/shared_location.dart';
+import 'package:okepoint/data/models/user/user.dart';
 
 import '../../constants/db_collection_paths.dart';
+import '../../utils/useful_methods.dart';
 
 final sharedLocationProvider = Provider<SharedLocationRepository>((ref) {
   return SharedLocationRepository(ref: ref);
@@ -21,11 +26,55 @@ class SharedLocationRepository {
         .snapshots();
   }
 
-  Future<bool> sharedLocation(String uid, SharedLocation location) async {
+  Future<bool> shareLocation(User user, {required LocationPoint location, required Emergency emergency}) async {
     try {
-      await _sharedLocationFirestore.doc(location.id).set(location.toMap());
-      return true;
-    } catch (e) {}
+      return FirebaseFirestore.instance.runTransaction((ts) async {
+        try {
+          final locationSnapshot = await ts.get(_sharedLocationFirestore.doc(user.currentSharedLocationId));
+
+          if (locationSnapshot.exists) {
+            /// update location
+            ts.update(_sharedLocationFirestore.doc(user.currentSharedLocationId), {
+              "updatedAt": utcTimeNow,
+              "lastLocation": location.toMap(),
+            });
+
+            final locationPointSubCollectionDocRef = _sharedLocationFirestore.doc(user.currentSharedLocationId).collection(DBCollectionPath.locationPointsSubcollection).doc(location.id);
+            ts.set(locationPointSubCollectionDocRef, location.toMap());
+
+            return true;
+          } else {
+            // create new location
+            final newSharedLocation = SharedLocation(
+              id: SharedLocation.generatedId,
+              createdBy: user.miniUserData,
+              startLocation: location,
+              lastLocation: location,
+              emergencyType: emergency.type,
+              duration: timeStampNow.add(const Duration(hours: 48)).millisecondsSinceEpoch,
+              createdAt: utcTimeNow,
+              updatedAt: utcTimeNow,
+            );
+
+            ts.set(_sharedLocationFirestore.doc(newSharedLocation.id), newSharedLocation.toMap());
+            ts.set(FirebaseFirestore.instance.collection(DBCollectionPath.users).doc(user.uid), {
+              "currentSharedLocation": {
+                "id": newSharedLocation.id,
+                "emergencyType": newSharedLocation.emergencyType,
+                "createdAt": newSharedLocation.createdAt,
+              },
+            });
+          }
+          return true;
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+
+        return false;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     return false;
   }

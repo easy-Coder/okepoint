@@ -3,4 +3,5 @@ class DBCollectionPath {
 
   static String users = "users";
   static String sharedLocations = "shared_locations";
+  static String locationPointsSubcollection = "location_points";
 }
