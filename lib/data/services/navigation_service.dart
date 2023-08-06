@@ -21,6 +21,11 @@ class NavigationService {
 
   AppRoutes get getInitialPath => kIsWeb ? AppRoutes.map : AppRoutes.shareLocation;
 
+  String? get toWebPathOnly {
+    if (kIsWeb) return AppRoutes.map.path;
+    return null;
+  }
+
   NavigationService(this.ref) {
     mainNavigatorKey = GlobalKey<NavigatorState>();
   }
@@ -46,6 +51,9 @@ class NavigationService {
                 GoRoute(
                   name: AppRoutes.shareLocation.name,
                   path: AppRoutes.shareLocation.path,
+                  redirect: (context, state) {
+                    return toWebPathOnly;
+                  },
                   pageBuilder: (_, state) {
                     return const NoTransitionPage(
                       child: ShareLocationViewWidget(),
@@ -60,6 +68,9 @@ class NavigationService {
                 GoRoute(
                   name: AppRoutes.profile.name,
                   path: AppRoutes.profile.path,
+                  redirect: (context, state) {
+                    return toWebPathOnly;
+                  },
                   pageBuilder: (_, state) {
                     return const NoTransitionPage(
                       child: UserProfileWiget(),
