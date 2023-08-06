@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -72,21 +73,23 @@ class AuthenticationView extends ConsumerWidget {
                     const SizedBox(height: AppSpacings.elementSpacing * 0.25),
                     OkepointTexts.bodyText("Signin to Continue using Okepoint", context),
                     const SizedBox(height: AppSpacings.cardPadding),
-                    OkepointPrimaryButton(
-                      onPressed: () => state.signInWithApple(),
-                      title: "Signin with Apple",
-                      color: isLight ? AppColors.black : AppColors.white,
-                      textColor: !isLight ? AppColors.black : AppColors.white,
-                      state: state.isAppleSiginIn ? ButtonState.loading : ButtonState.initial,
-                      icon: Padding(
-                        padding: const EdgeInsets.all(AppSpacings.elementSpacing),
-                        child: Image.asset(
-                          IconPaths.apple,
-                          color: !isLight ? AppColors.black : AppColors.white,
+                    if (Platform.isIOS) ...[
+                      OkepointPrimaryButton(
+                        onPressed: () => state.signInWithApple(),
+                        title: "Signin with Apple",
+                        color: isLight ? AppColors.black : AppColors.white,
+                        textColor: !isLight ? AppColors.black : AppColors.white,
+                        state: state.isAppleSiginIn ? ButtonState.loading : ButtonState.initial,
+                        icon: Padding(
+                          padding: const EdgeInsets.all(AppSpacings.elementSpacing),
+                          child: Image.asset(
+                            IconPaths.apple,
+                            color: !isLight ? AppColors.black : AppColors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: AppSpacings.elementSpacing),
+                      const SizedBox(height: AppSpacings.elementSpacing),
+                    ],
                     OkepointPrimaryButton(
                       onPressed: () => state.signInWithGoogle(),
                       title: "Signin with Google",
