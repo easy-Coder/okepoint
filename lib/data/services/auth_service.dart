@@ -12,7 +12,9 @@ final authServiceProvider = Provider<AuthService>((ref) {
 enum SocialAuthProvider { apple, google }
 
 abstract class SocialAuthService {
-  final googleIn = GoogleSignIn();
+  final googleIn = GoogleSignIn(
+    clientId: "244445171854-eriiiq7qt2klpp3lhkh11nvv0ovta3sg.apps.googleusercontent.com",
+  );
 
   Future<UserCredential?> signInWithApple();
   Future<UserCredential?> signInWithGoogle();

@@ -28,9 +28,13 @@ class SharedLocationState extends StateNotifier<SharedLocation?> {
   void _listenToSharedLocation() {
     try {
       _cancelSharedLocationSubscription();
+      print("sharedLocationId : $sharedLocationId");
+
       _sharedLocationSubscription = _sharedLocationRepo.sharedLocationStream(sharedLocationId).listen((document) {
         state = document.data();
         shareLocationNotifier.value = state;
+
+        print("state : $state");
       });
     } catch (e) {
       debugPrint(e.toString());

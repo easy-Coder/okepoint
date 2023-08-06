@@ -35,6 +35,8 @@ class MapService {
 
   StreamSubscription? _positionSubscription;
 
+  BitmapDescriptor? userIconPin;
+
   MapService(this.ref) {
     _initializedBackgroundService();
   }
@@ -84,6 +86,7 @@ class MapService {
           id: "current-user-location",
           name: '',
           geohash: '',
+          descriptor: userIconPin!,
           location: latLng,
         );
 
@@ -102,7 +105,7 @@ class MapService {
 
   Future<LocationPoint?> getUserCurrentPosition() async {
     try {
-      final icon = await getIconFromAssetString(IconPaths.pin);
+      userIconPin = await getIconFromAssetString(IconPaths.pin);
 
       final isGranted = await requestPermission();
 
@@ -116,7 +119,7 @@ class MapService {
         name: '',
         geohash: '',
         location: latLng,
-        descriptor: icon,
+        descriptor: userIconPin!,
       );
 
       final newLocation = await getLocationFromLatLng(location);

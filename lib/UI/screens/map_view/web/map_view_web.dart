@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:okepoint/UI/theme/colors.dart';
 
 import '../components/info_window.dart';
 import '../map_view_state.dart';
@@ -20,6 +22,7 @@ class _MapViewState extends ConsumerState<MapView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(selectSharedLocationIdProvider.notifier).state = widget.trackingId;
+      print("trackingId ${widget.trackingId}");
     });
   }
 
@@ -37,31 +40,43 @@ class _MapViewState extends ConsumerState<MapView> {
           if (currentLocation == null) return const SizedBox.shrink();
           final markers = state.mapMarkers.value;
 
-          return Stack(
-            children: [
-              GoogleMap(
-                myLocationButtonEnabled: false,
-                mapType: MapType.terrain,
-                initialCameraPosition: CameraPosition(
-                  target: currentLocation.location,
-                  zoom: 15,
-                ),
-                markers: markers,
-                onTap: (_) => state.infoWindowController.hideInfoWindow!(),
-                onMapCreated: (GoogleMapController controller) {
-                  state.mapController.complete(controller);
-
-                  state.infoWindowController.googleMapController = controller;
-                },
-              ),
-              CustomInfoWindow(
-                controller: state.infoWindowController,
-                height: MediaQuery.of(context).size.width * 0.12,
-                width: MediaQuery.of(context).size.width * 0.4,
-                offset: 50,
-              ),
-            ],
-          );
+          return FutureBuilder(
+              future: state.mapController.future,
+              builder: (context, v) {
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      myLocationButtonEnabled: false,
+                      mapType: MapType.terrain,
+                      initialCameraPosition: CameraPosition(
+                        target: currentLocation.location,
+                        zoom: 15,
+                      ),
+                      markers: markers,
+                      onTap: (_) => state.infoWindowController.hideInfoWindow!(),
+                      onMapCreated: (GoogleMapController controller) {
+                        state.mapController.complete(controller);
+                        state.infoWindowController.googleMapController = controller;
+                      },
+                    ),
+                    CustomInfoWindow(
+                      controller: state.infoWindowController,
+                      height: MediaQuery.of(context).size.width * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      offset: 50,
+                    ),
+                    if (!v.hasData)
+                      Container(
+                        color: AppColors.white,
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                  ],
+                );
+              });
         });
   }
 }
