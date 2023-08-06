@@ -27,23 +27,24 @@ class OkePointApp extends ConsumerWidget {
     final appTheme = ref.read(appThemeProvider);
 
     return ValueListenableBuilder<ThemeData>(
-        valueListenable: appTheme.themeDataNotifier,
-        builder: (context, theme, _) {
-          return MaterialApp.router(
-            theme: theme,
-            routerConfig: navigationService.router,
-            shortcuts: {
-              LogicalKeySet(LogicalKeyboardKey.space): const ActivateIntent(),
-            },
-            title: 'Òkè point',
-            builder: (context, widget) => Overlay(
-              initialEntries: [
-                OverlayEntry(
-                  builder: (context) => widget ?? const SizedBox(),
-                ),
-              ],
-            ),
-          );
-        });
+      valueListenable: appTheme.themeDataNotifier,
+      builder: (context, theme, _) {
+        return MaterialApp.router(
+          theme: theme,
+          routerConfig: navigationService.router,
+          shortcuts: {
+            LogicalKeySet(LogicalKeyboardKey.space): const ActivateIntent(),
+          },
+          title: 'Òkè point',
+          builder: (context, widget) => Overlay(
+            initialEntries: [
+              OverlayEntry(
+                builder: (context) => widget ?? const SizedBox(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

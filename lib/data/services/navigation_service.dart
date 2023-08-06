@@ -19,6 +19,8 @@ class NavigationService {
 
   late GlobalKey<NavigatorState> mainNavigatorKey;
 
+  AppRoutes get getInitialPath => kIsWeb ? AppRoutes.map : AppRoutes.shareLocation;
+
   NavigationService(this.ref) {
     mainNavigatorKey = GlobalKey<NavigatorState>();
   }
@@ -26,7 +28,7 @@ class NavigationService {
   GoRouter get router {
     return GoRouter(
       navigatorKey: mainNavigatorKey,
-      initialLocation: getInitialPath().path,
+      initialLocation: getInitialPath.path,
       routes: [
         StatefulShellRoute.indexedStack(
           parentNavigatorKey: mainNavigatorKey,
@@ -72,16 +74,16 @@ class NavigationService {
           name: AppRoutes.map.name,
           path: AppRoutes.map.path,
           pageBuilder: (_, state) {
-            return const NoTransitionPage(
-              child: MapView(),
+            final trackingId = state.queryParameters["trackingId"];
+
+            return NoTransitionPage(
+              child: MapView(trackingId: trackingId),
             );
           },
         ),
       ],
     );
   }
-
-  AppRoutes getInitialPath() => kIsWeb ? AppRoutes.map : AppRoutes.shareLocation;
 }
 
 String getRoutePath(String path, {Map<String, dynamic> quary = const {}}) {

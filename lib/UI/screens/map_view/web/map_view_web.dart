@@ -5,11 +5,26 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../components/info_window.dart';
 import '../map_view_state.dart';
 
-class MapView extends ConsumerWidget {
-  const MapView({super.key});
+class MapView extends ConsumerStatefulWidget {
+  final String? trackingId;
+
+  const MapView({super.key, required this.trackingId});
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends ConsumerState<MapView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(selectSharedLocationIdProvider.notifier).state = widget.trackingId;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(mapViewStateProvider);
 
     return ListenableBuilder(
