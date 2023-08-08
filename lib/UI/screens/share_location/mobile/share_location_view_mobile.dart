@@ -73,6 +73,7 @@ class ShareLocationViewWidget extends ConsumerWidget {
                         (location) => userNotifier.updateCurrentUserSharedLocation(
                           selectedEmergency!,
                           location: location,
+                          isEnabled: isEnabled,
                         ),
                       );
                     },

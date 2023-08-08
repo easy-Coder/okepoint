@@ -57,12 +57,13 @@ class SharedLocationRepository {
             );
 
             ts.set(_sharedLocationFirestore.doc(newSharedLocation.id), newSharedLocation.toMap());
-            ts.set(FirebaseFirestore.instance.collection(DBCollectionPath.users).doc(user.uid), {
+            ts.update(FirebaseFirestore.instance.collection(DBCollectionPath.users).doc(user.uid), {
               "currentSharedLocation": {
                 "id": newSharedLocation.id,
                 "emergencyType": newSharedLocation.emergencyType,
                 "createdAt": newSharedLocation.createdAt,
               },
+              "homePreferences.enabledLocation": true,
             });
           }
           return true;

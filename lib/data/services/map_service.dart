@@ -37,6 +37,10 @@ class MapService {
 
   BitmapDescriptor? userIconPin;
 
+  bool initialLastLocation = true;
+
+  LatLng? lastLatLng;
+
   MapService(this.ref) {
     _initializedBackgroundService();
   }
@@ -90,16 +94,32 @@ class MapService {
           location: latLng,
         );
 
-        currentUserLocationPointNotifier.value = location;
-        onLocationChanged(location);
+        if (lastLatLng != null) {
+          final meter = Geolocator.distanceBetween(
+            latLng.latitude,
+            latLng.longitude,
+            lastLatLng!.latitude,
+            lastLatLng!.longitude,
+          );
+
+          if (meter > 100) {
+            currentUserLocationPointNotifier.value = location;
+            onLocationChanged(location);
+
+            lastLatLng = latLng;
+
+            print("DB LISTENING $latLng");
+          }
+        }
       });
-    } catch (e) {}
+    } catch (_) {}
   }
 
   void cancelRealtimeLocationShare() {
     _positionSubscription?.cancel();
     _positionSubscription = null;
 
+    initialLastLocation = true;
     enabledLocationSharing.value = false;
   }
 
@@ -124,6 +144,7 @@ class MapService {
 
       final newLocation = await getLocationFromLatLng(location);
       currentUserLocationPointNotifier.value = newLocation;
+      lastLatLng = latLng;
 
       addMarker(newLocation);
     } catch (_) {}

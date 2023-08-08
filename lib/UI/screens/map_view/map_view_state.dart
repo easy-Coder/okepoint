@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../constants/icon_path.dart';
+import '../../../constants/text_path.dart';
 import '../../../data/services/map_service.dart';
 import '../../../utils/useful_methods.dart';
 import 'components/info_window.dart';
@@ -51,22 +52,23 @@ class MapViewState extends ChangeNotifier {
   }
 
   void _startLocationTracking() async {
-    final id = ref.read(selectSharedLocationIdProvider);
+    final sharedLocationId = ref.read(selectSharedLocationIdProvider);
 
     final controller = await mapController.future;
 
-    rootBundle.loadString('assets/txt/map_style_light.txt').then((value) {
+    rootBundle.loadString(TxtPath.mapStyle).then((value) {
       mapStyle = value;
       controller.setMapStyle(mapStyle);
     });
 
-    if (id == null) return;
+    if (sharedLocationId == null) return;
 
-    ref.listen(sharedLocationStateProvider.call(id), (oldLocation, newLocation) async {
-      print("newLocation $newLocation");
+    ref.listen(sharedLocationStateProvider.call(sharedLocationId), (oldLocation, newLocation) async {
+      debugPrint("newLocation $newLocation");
 
       if (newLocation != null) {
         userDestinationIconPin ??= await getIconFromAssetString(IconPaths.point);
+
         _mapService.addMarker(newLocation.lastLocation.copyWith(
           descriptor: userDestinationIconPin,
         ));

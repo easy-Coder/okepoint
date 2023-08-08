@@ -18,7 +18,7 @@ final userStateProvider = StateNotifierProvider<UserState, User?>((ref) {
 class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
   final Ref ref;
 
-  bool _launchSetUp = true;
+  bool _launchSetUp = true, _isActive = false;
 
   Timer? _timer;
   StreamSubscription? _userContactsSubscription;
@@ -103,23 +103,22 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     });
   }
 
-  Future<void> updateCurrentUserSharedLocation(Emergency emergency, {required LocationPoint location}) async {
-    final User? user = currentUser.value;
+  Future<void> updateCurrentUserSharedLocation(Emergency emergency, {required LocationPoint location, required bool isEnabled}) async {
+    if (state == null) return;
 
-    if (user == null) return;
-
-    if (_timer?.isActive == false) {
+    if (_isActive == false) {
+      _isActive = true;
       _cancelLocationTimer();
 
-      _timer = Timer(const Duration(seconds: 15), () async {
-        /// trigger code
-
+      _timer = Timer(_mapService.initialLastLocation ? const Duration(milliseconds: 100) : const Duration(seconds: 30), () async {
         await _sharedLocationRepo.shareLocation(
-          user,
+          state!,
           location: location,
           emergency: emergency,
         );
 
+        _mapService.initialLastLocation = false;
+        _isActive = false;
         _cancelLocationTimer();
       });
     }

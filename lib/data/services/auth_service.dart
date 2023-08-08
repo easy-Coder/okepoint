@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -13,7 +14,7 @@ enum SocialAuthProvider { apple, google }
 
 abstract class SocialAuthService {
   final googleIn = GoogleSignIn(
-    clientId: "244445171854-eriiiq7qt2klpp3lhkh11nvv0ovta3sg.apps.googleusercontent.com",
+    clientId: kIsWeb ? "244445171854-eriiiq7qt2klpp3lhkh11nvv0ovta3sg.apps.googleusercontent.com" : null,
   );
 
   Future<UserCredential?> signInWithApple();

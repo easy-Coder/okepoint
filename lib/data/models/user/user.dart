@@ -37,8 +37,8 @@ class User {
   });
 
   String get displayName => "$firstName $lastName";
-  String get currentSharedLocationId => currentSharedLocation["id"] ?? "";
-  String get currentSharedLocationEmergencyType => currentSharedLocation["emergencyType"] ?? "";
+  String? get currentSharedLocationId => currentSharedLocation["id"];
+  String? get currentSharedLocationEmergencyType => currentSharedLocation["emergencyType"];
 
   Map<String, dynamic> get miniUserData => {
         "uid": uid,
