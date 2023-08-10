@@ -69,13 +69,26 @@ class ShareLocationViewWidget extends ConsumerWidget {
                         return;
                       }
 
-                      mapService.shareLocationRealtime(
-                        (location) => userNotifier.updateCurrentUserSharedLocation(
-                          selectedEmergency!,
-                          location: location,
-                          isEnabled: isEnabled,
-                        ),
-                      );
+                      final emergency = selectedEmergency;
+                      final userCurrentLocation = mapService.currentUserLocationPointNotifier.value;
+
+                      if (emergency != null && userCurrentLocation != null) {
+                        // start location
+                        userNotifier.updateCurrentUserSharedLocation(
+                          location: userCurrentLocation,
+                          emergency: emergency,
+                          listening: false,
+                        );
+
+                        // listen to location
+                        mapService.shareLocationRealtime(
+                          (location) => userNotifier.updateCurrentUserSharedLocation(
+                            emergency: emergency,
+                            location: location,
+                            listening: true,
+                          ),
+                        );
+                      }
                     },
                   ),
                   const SizedBox(height: AppSpacings.cardPadding),

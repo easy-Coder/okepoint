@@ -63,20 +63,19 @@ class MapViewState extends ChangeNotifier {
 
     if (sharedLocationId == null) return;
 
-    ref.listen(sharedLocationStateProvider.call(sharedLocationId), (oldLocation, newLocation) async {
-      debugPrint("newLocation $newLocation");
-
+    ref.listen(sharedLocationStateProvider.call(sharedLocationId), (oldLocation, newLocation) {
       if (newLocation != null) {
-        userDestinationIconPin ??= await getIconFromAssetString(IconPaths.point);
+        getIconFromAssetString(IconPaths.point).then((value) {
+          userDestinationIconPin ??= value;
+          _mapService.addMarker(newLocation.lastLocation.copyWith(
+            descriptor: userDestinationIconPin,
+          ));
 
-        _mapService.addMarker(newLocation.lastLocation.copyWith(
-          descriptor: userDestinationIconPin,
-        ));
-
-        controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: newLocation.lastLocation.location,
-          zoom: 15,
-        )));
+          controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: newLocation.lastLocation.location,
+            zoom: 15,
+          )));
+        });
       }
     });
   }

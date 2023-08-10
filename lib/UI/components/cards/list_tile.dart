@@ -20,3 +20,24 @@ class OkeListTile extends StatelessWidget {
     );
   }
 }
+
+class OkeListTileReverse extends StatelessWidget {
+  final Widget title;
+  final Widget trailing;
+
+  const OkeListTileReverse({
+    super.key,
+    required this.title,
+    required this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        title,
+        Expanded(child: trailing),
+      ],
+    );
+  }
+}

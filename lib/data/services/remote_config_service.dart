@@ -32,8 +32,12 @@ class RemoteConfigService {
   }
 
   List<Emergency> get appEmergencies {
-    final response = _remoteConfig.getValue("emergencies");
-    final data = List<dynamic>.from(jsonDecode(response.asString()));
-    return data.map((e) => Emergency.fromMap(e)).toList();
+    try {
+      final response = _remoteConfig.getValue("emergencies");
+      final data = List<dynamic>.from(jsonDecode(response.asString()));
+      return data.map((e) => Emergency.fromMap(e)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 }

@@ -1,17 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, constant_identifier_names
 import 'dart:async';
 import 'dart:convert';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
-import 'package:okepoint/app.dart';
+import 'package:location/location.dart' hide LocationAccuracy;
 
-import '../../configs/app_config.dart';
-import '../../configs/firebase_options.dart';
 import '../../constants/icon_path.dart';
 import '../../constants/keys.dart';
 import '../../utils/useful_methods.dart';
@@ -24,9 +20,10 @@ final mapServiceProvider = Provider<MapService>((ref) {
 
 class MapService {
   final Ref ref;
-  final FlutterBackgroundService backgroundService = FlutterBackgroundService();
 
   final String baseGoogleMapsUrl = "https://maps.googleapis.com/maps/api";
+
+  Location location = Location();
 
   ValueNotifier<bool> enabledLocationSharing = ValueNotifier<bool>(false);
 
@@ -37,61 +34,36 @@ class MapService {
 
   BitmapDescriptor? userIconPin;
 
-  bool initialLastLocation = true;
-
   LatLng? lastLatLng;
 
-  MapService(this.ref) {
-    _initializedBackgroundService();
-  }
+  MapService(this.ref);
 
-  Future<void> _initializedBackgroundService() async {
-    try {
-      final result = await backgroundService.configure(
-          iosConfiguration: IosConfiguration(
-            onForeground: _onBackgroundListener,
-            onBackground: (v) => _onBackgroundListener(v, isBackground: true),
-          ),
-          androidConfiguration: AndroidConfiguration(
-            isForegroundMode: false,
-            onStart: (v) => _onBackgroundListener(v, isBackground: true),
-          ));
-
-      backgroundService.startService();
-
-      debugPrint("BACKGROUND SERVICE INITIALIZED: $result");
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  Future<bool> _onBackgroundListener(ServiceInstance service, {bool isBackground = false}) async {
-    debugPrint("BackgroundListener");
-
-    if (isBackground) {
-      AppFlavorConfigs.instance.setFlavor = AppFlavor.dev;
-      WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp(options: kIsWeb ? DefaultFirebaseOptions.currentPlatform(AppFlavor.dev) : null);
-      debugPrint("START BACKGROUND SERVICE");
-    }
-
-    return true;
+  void enableBackgroundLocation(bool enable) {
+    if (!enabledLocationSharing.value) return;
+    location.enableBackgroundMode(enable: enable);
   }
 
   Future<void> shareLocationRealtime(Function(LocationPoint) onLocationChanged) async {
     try {
+      final enable = await requestPermission();
+
+      if (!enable) return;
+
       cancelRealtimeLocationShare();
+      _positionSubscription = location.onLocationChanged.listen((position) {
+        if (position.latitude == null || position.longitude == null) return;
 
-      _positionSubscription = Geolocator.getPositionStream().listen((position) {
         enabledLocationSharing.value = true;
+        debugPrint("LOCATION STREAM STARTED");
 
-        final latLng = LatLng(position.latitude, position.longitude);
+        final latLng = LatLng(position.latitude!, position.longitude!);
         final location = LocationPoint(
           id: "current-user-location",
           name: '',
           geohash: '',
           descriptor: userIconPin!,
           location: latLng,
+          createdAt: timeStampNow.millisecondsSinceEpoch,
         );
 
         if (lastLatLng != null) {
@@ -107,8 +79,7 @@ class MapService {
             onLocationChanged(location);
 
             lastLatLng = latLng;
-
-            print("DB LISTENING $latLng");
+            debugPrint("100M changed ocurred $latLng");
           }
         }
       });
@@ -119,7 +90,6 @@ class MapService {
     _positionSubscription?.cancel();
     _positionSubscription = null;
 
-    initialLastLocation = true;
     enabledLocationSharing.value = false;
   }
 
@@ -140,6 +110,7 @@ class MapService {
         geohash: '',
         location: latLng,
         descriptor: userIconPin!,
+        createdAt: (data.timestamp ?? DateTime.now()).millisecondsSinceEpoch,
       );
 
       final newLocation = await getLocationFromLatLng(location);
@@ -153,8 +124,8 @@ class MapService {
   }
 
   Future<bool> requestPermission() async {
-    final permission = await Geolocator.requestPermission();
-    return [LocationPermission.always, LocationPermission.whileInUse].contains(permission);
+    final permission = await location.requestPermission();
+    return [PermissionStatus.granted, PermissionStatus.grantedLimited].contains(permission);
   }
 
   void addMarker(LocationPoint point) {

@@ -8,3 +8,12 @@ final selectedEmergencyProvider = StateProvider<Emergency?>((ref) {
 
   return emergencies.firstOrNull;
 });
+
+final getByTypeEmergencyProvider = Provider.family<Emergency?, String>((ref, type) {
+  try {
+    final emergencies = ref.read(remoteConfigServiceProvider).appEmergencies;
+
+    return emergencies.firstWhere((element) => element.type == type);
+  } catch (e) {}
+  return null;
+});

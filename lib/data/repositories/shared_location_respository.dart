@@ -26,6 +26,16 @@ class SharedLocationRepository {
         .snapshots();
   }
 
+  Stream<QuerySnapshot<LocationPoint>> sharedLocationPointsStream(String id) {
+    return _sharedLocationFirestore
+        .doc(id)
+        .collection(DBCollectionPath.locationPointsSubcollection)
+        .orderBy("createdAt", descending: true)
+        .limit(10)
+        .withConverter(fromFirestore: (data, options) => LocationPoint.fromMap(data.data() as Map<String, dynamic>), toFirestore: (data, options) => data.toMap())
+        .snapshots();
+  }
+
   Future<bool> shareLocation(User user, {required LocationPoint location, required Emergency emergency}) async {
     try {
       return FirebaseFirestore.instance.runTransaction((ts) async {
@@ -34,13 +44,26 @@ class SharedLocationRepository {
 
           if (locationSnapshot.exists) {
             /// update location
+            final sharedLocation = SharedLocation.fromMap(locationSnapshot.data() as Map<String, dynamic>);
+
+            final locationPointSubCollectionDocRef = _sharedLocationFirestore.doc(user.currentSharedLocationId).collection(DBCollectionPath.locationPointsSubcollection).doc(location.id);
+            ts.set(locationPointSubCollectionDocRef, location.toMap());
+
             ts.update(_sharedLocationFirestore.doc(user.currentSharedLocationId), {
               "updatedAt": utcTimeNow,
               "lastLocation": location.toMap(),
             });
 
-            final locationPointSubCollectionDocRef = _sharedLocationFirestore.doc(user.currentSharedLocationId).collection(DBCollectionPath.locationPointsSubcollection).doc(location.id);
-            ts.set(locationPointSubCollectionDocRef, location.toMap());
+            if (user.homePreferences["sharingLocationEnabled"] == false) {
+              ts.update(FirebaseFirestore.instance.collection(DBCollectionPath.users).doc(user.uid), {
+                "currentSharedLocation": {
+                  "id": locationSnapshot.id,
+                  "emergencyType": sharedLocation.emergencyType,
+                  "createdAt": sharedLocation.createdAt,
+                },
+                "homePreferences.sharingLocationEnabled": true,
+              });
+            }
 
             return true;
           } else {
@@ -63,7 +86,7 @@ class SharedLocationRepository {
                 "emergencyType": newSharedLocation.emergencyType,
                 "createdAt": newSharedLocation.createdAt,
               },
-              "homePreferences.enabledLocation": true,
+              "homePreferences.sharingLocationEnabled": true,
             });
           }
           return true;

@@ -1,10 +1,13 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../utils/useful_methods.dart';
+
 class LocationPoint {
   final String id;
   final String name;
   final String geohash;
   final LatLng location;
+  final int createdAt;
   final BitmapDescriptor descriptor;
 
   LocationPoint({
@@ -13,7 +16,10 @@ class LocationPoint {
     required this.id,
     required this.geohash,
     required this.name,
+    required this.createdAt,
   });
+
+  static String get generatedId => generate16DigitIds("lp");
 
   LocationPoint copyWith({
     LatLng? location,
@@ -21,6 +27,7 @@ class LocationPoint {
     String? id,
     String? geohash,
     String? name,
+    int? createdAt,
   }) {
     return LocationPoint(
       location: location ?? this.location,
@@ -28,6 +35,7 @@ class LocationPoint {
       id: id ?? this.id,
       geohash: geohash ?? this.geohash,
       name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -39,6 +47,7 @@ class LocationPoint {
       },
       'id': id,
       'geohash': geohash,
+      'createdAt': createdAt,
     };
   }
 
@@ -47,8 +56,9 @@ class LocationPoint {
     return LocationPoint(
       location: LatLng(latlng["lat"], latlng["lng"]),
       id: map['id'] as String,
-      geohash: map['geohash'] as String,
-      name: map['name'],
+      geohash: map['geohash'] ?? "",
+      name: map['name'] ?? "",
+      createdAt: map['createdAt'] ?? 0,
     );
   }
 

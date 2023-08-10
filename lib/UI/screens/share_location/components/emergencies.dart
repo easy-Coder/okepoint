@@ -14,6 +14,7 @@ class Emergencies extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emergencies = ref.read(remoteConfigServiceProvider).appEmergencies;
+
     final selectedEmergency = ref.watch(selectedEmergencyProvider);
     final contacts = ref.watch(contactsStateProvider);
 

@@ -52,8 +52,9 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
+        _mapService.enableBackgroundLocation(false);
       case AppLifecycleState.paused:
-        debugPrint("START PAUSED");
+        _mapService.enableBackgroundLocation(true);
       case AppLifecycleState.inactive:
       case AppLifecycleState.detached:
         break;
@@ -103,21 +104,32 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     });
   }
 
-  Future<void> updateCurrentUserSharedLocation(Emergency emergency, {required LocationPoint location, required bool isEnabled}) async {
-    if (state == null) return;
+  Future<void> updateCurrentUserSharedLocation({required LocationPoint location, Emergency? emergency, bool listening = true}) async {
+    if (state == null || emergency == null) return;
+
+    if (listening == false) {
+      await _sharedLocationRepo.shareLocation(
+        state!,
+        location: location.copyWith(id: LocationPoint.generatedId),
+        emergency: emergency,
+      );
+
+      return;
+    }
 
     if (_isActive == false) {
       _isActive = true;
       _cancelLocationTimer();
 
-      _timer = Timer(_mapService.initialLastLocation ? const Duration(milliseconds: 100) : const Duration(seconds: 30), () async {
+      _timer = Timer(const Duration(seconds: 30), () async {
         await _sharedLocationRepo.shareLocation(
           state!,
-          location: location,
+          location: location.copyWith(id: LocationPoint.generatedId),
           emergency: emergency,
         );
 
-        _mapService.initialLastLocation = false;
+        debugPrint("UPDATE LOCATION ON DB");
+
         _isActive = false;
         _cancelLocationTimer();
       });
