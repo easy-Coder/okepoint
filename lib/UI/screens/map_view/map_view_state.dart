@@ -14,7 +14,7 @@ import '../../../data/services/map_service.dart';
 import '../../../utils/useful_methods.dart';
 import 'components/info_window.dart';
 
-final selectSharedLocationIdProvider = StateProvider.autoDispose<String?>((ref) {
+final selectSharedLocationIdProvider = StateProvider<String?>((ref) {
   return null;
 });
 
@@ -25,20 +25,30 @@ final mapViewStateProvider = ChangeNotifierProvider.autoDispose<MapViewState>((r
 class MapViewState extends ChangeNotifier {
   final Ref ref;
   SharedLocation? sharedLocation;
+  bool listenLastLocationPoint = true;
 
   late Completer<GoogleMapController> mapController;
   late CustomInfoWindowController infoWindowController;
 
   BitmapDescriptor? userDestinationIconPin;
 
-  String? mapStyle;
+  int stepperIndex = 0;
+
+  late GoogleMapController controller;
 
   ValueNotifier<LocationPoint?> get currentUserLocationPoint => _mapService.currentUserLocationPointNotifier;
-  LocationPoint? get destinationLocation => sharedLocation?.lastLocation;
+  LocationPoint? destinationLocation;
 
   ValueNotifier<Set<Marker>> get mapMarkers => _mapService.mapMarkers;
+  ValueNotifier<Set<Polyline>> get mapPolylines => _mapService.mapPolylines;
 
+  String? get trackingId => ref.read(selectSharedLocationIdProvider);
   MapService get _mapService => ref.read(mapServiceProvider);
+
+  set updateStepperIndex(int v) {
+    stepperIndex = v;
+    notifyListeners();
+  }
 
   MapViewState(this.ref) {
     infoWindowController = CustomInfoWindowController();
@@ -46,37 +56,58 @@ class MapViewState extends ChangeNotifier {
 
     _mapService.getUserCurrentPosition();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      controller = await mapController.future;
+      final style = await rootBundle.loadString(TxtPath.mapStyle);
+
+      controller.setMapStyle(style);
+
       _startLocationTracking();
     });
   }
 
+  Future<void> goToLocationPoint(LocationPoint point) async {
+    final newLocation = point.copyWith(
+      id: "destination-location",
+      descriptor: userDestinationIconPin,
+    );
+
+    destinationLocation = newLocation;
+    notifyListeners();
+
+    _mapService.addMarker(destinationLocation!);
+
+    await controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: destinationLocation!.location,
+      zoom: 15,
+    )));
+  }
+
   void _startLocationTracking() async {
-    final sharedLocationId = ref.read(selectSharedLocationIdProvider);
+    if (trackingId == null) return;
 
-    final controller = await mapController.future;
+    ref.listen(sharedLocationStateProvider.call(trackingId!), (oldLocation, newLocation) {
+      sharedLocation = newLocation ?? oldLocation;
 
-    rootBundle.loadString(TxtPath.mapStyle).then((value) {
-      mapStyle = value;
-      controller.setMapStyle(mapStyle);
-    });
+      notifyListeners();
 
-    if (sharedLocationId == null) return;
-
-    ref.listen(sharedLocationStateProvider.call(sharedLocationId), (oldLocation, newLocation) {
-      if (newLocation != null) {
+      if (newLocation != null && listenLastLocationPoint) {
         getIconFromAssetString(IconPaths.point).then((value) {
           userDestinationIconPin ??= value;
-          _mapService.addMarker(newLocation.lastLocation.copyWith(
-            descriptor: userDestinationIconPin,
-          ));
 
-          controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: newLocation.lastLocation.location,
-            zoom: 15,
-          )));
+          goToLocationPoint(newLocation.lastLocation);
         });
       }
     });
+  }
+
+  void toNewLocation(LocationPoint lastLocation) {
+    listenLastLocationPoint = false;
+
+    if (lastLocation.location == sharedLocation?.lastLocation.location) {
+      listenLastLocationPoint = true;
+    }
+
+    goToLocationPoint(lastLocation);
   }
 }

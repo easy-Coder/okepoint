@@ -30,6 +30,9 @@ class SharedLocation {
 
   static String get generatedId => generate16DigitIds("sl");
 
+  String get displayName => createdBy["name"] ?? "";
+  String get profileImageUrl => createdBy['profileImageUrl'] ?? "";
+
   SharedLocation copyWith({
     String? id,
     Map<String, dynamic>? createdBy,

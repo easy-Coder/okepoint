@@ -126,4 +126,8 @@ extension XDateTime on DateTime {
       return '${years.round()} years ago';
     }
   }
+
+  String get getLocationTimestamp => DateFormat("hh:mm aa  -  MMM. d yyyy", "en_US").format(this);
+  String get getShortLocationTimestamp => DateFormat("hh:mm aa  -  MMM. d", "en_US").format(this);
+  String get get24Time => DateFormat(DateFormat.HOUR24_MINUTE).format(this);
 }

@@ -46,6 +46,7 @@ class LocationPoint {
         "lng": location.longitude,
       },
       'id': id,
+      'name': name,
       'geohash': geohash,
       'createdAt': createdAt,
     };
@@ -68,9 +69,9 @@ class LocationPoint {
   @override
   bool operator ==(covariant LocationPoint other) {
     if (identical(this, other)) return true;
-    return other.location == location && other.descriptor == descriptor && other.id == id && other.geohash == geohash;
+    return other.createdAt == createdAt && other.location == location && other.descriptor == descriptor && other.id == id && other.geohash == geohash;
   }
 
   @override
-  int get hashCode => location.hashCode ^ descriptor.hashCode ^ id.hashCode ^ geohash.hashCode;
+  int get hashCode => location.hashCode ^ createdAt.hashCode ^ name.hashCode ^ descriptor.hashCode ^ id.hashCode ^ geohash.hashCode;
 }

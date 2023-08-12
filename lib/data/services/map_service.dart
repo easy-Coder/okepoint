@@ -3,10 +3,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:location/location.dart' hide LocationAccuracy;
+import 'package:okepoint/UI/theme/colors.dart';
 
 import '../../constants/icon_path.dart';
 import '../../constants/keys.dart';
@@ -23,12 +25,14 @@ class MapService {
 
   final String baseGoogleMapsUrl = "https://maps.googleapis.com/maps/api";
 
-  Location location = Location();
+  final Location location = Location();
+  final PolylinePoints polylinePoints = PolylinePoints();
 
   ValueNotifier<bool> enabledLocationSharing = ValueNotifier<bool>(false);
 
   ValueNotifier<LocationPoint?> currentUserLocationPointNotifier = ValueNotifier<LocationPoint?>(null);
   ValueNotifier<Set<Marker>> mapMarkers = ValueNotifier<Set<Marker>>({});
+  ValueNotifier<Set<Polyline>> mapPolylines = ValueNotifier<Set<Polyline>>({});
 
   StreamSubscription? _positionSubscription;
 
@@ -37,6 +41,17 @@ class MapService {
   LatLng? lastLatLng;
 
   MapService(this.ref);
+
+  bool latLngMeters(LatLng latLng, {LatLng? lastLL, int meterThreshold = 100}) {
+    final meter = Geolocator.distanceBetween(
+      latLng.latitude,
+      latLng.longitude,
+      (lastLL ?? lastLatLng)!.latitude,
+      (lastLL ?? lastLatLng)!.longitude,
+    );
+
+    return meter > meterThreshold;
+  }
 
   void enableBackgroundLocation(bool enable) {
     if (!enabledLocationSharing.value) return;
@@ -67,14 +82,7 @@ class MapService {
         );
 
         if (lastLatLng != null) {
-          final meter = Geolocator.distanceBetween(
-            latLng.latitude,
-            latLng.longitude,
-            lastLatLng!.latitude,
-            lastLatLng!.longitude,
-          );
-
-          if (meter > 100) {
+          if (latLngMeters(latLng)) {
             currentUserLocationPointNotifier.value = location;
             onLocationChanged(location);
 
@@ -113,7 +121,7 @@ class MapService {
         createdAt: (data.timestamp ?? DateTime.now()).millisecondsSinceEpoch,
       );
 
-      final newLocation = await getLocationFromLatLng(location);
+      final newLocation = await getLocationFromLatLngAPI(location);
       currentUserLocationPointNotifier.value = newLocation;
       lastLatLng = latLng;
 
@@ -128,6 +136,21 @@ class MapService {
     return [PermissionStatus.granted, PermissionStatus.grantedLimited].contains(permission);
   }
 
+  void addPolyline(LocationPoint point) async {
+    final startPoint = currentUserLocationPointNotifier.value!.location;
+    final polylines = await getRoutePolyPoints(startPoint, point.location);
+
+    final newPolyline = Polyline(
+      polylineId: PolylineId(point.id),
+      color: AppColors.green,
+      width: 5,
+      points: polylines.map((e) => LatLng(e.latitude, e.longitude)).toList(),
+    );
+
+    mapPolylines.value.removeWhere((poly) => poly.polylineId.value == point.id);
+    mapPolylines.value = {newPolyline, ...mapPolylines.value};
+  }
+
   void addMarker(LocationPoint point) {
     final newMarker = Marker(
       markerId: MarkerId(point.id),
@@ -140,9 +163,7 @@ class MapService {
     mapMarkers.value = {newMarker, ...mapMarkers.value};
   }
 
-  void onTapMarker() {}
-
-  Future<LocationPoint> getLocationFromLatLng(LocationPoint point) async {
+  Future<LocationPoint> getLocationFromLatLngAPI(LocationPoint point) async {
     try {
       String url = "$baseGoogleMapsUrl/geocode/json?latlng=${point.location.latitude},${point.location.longitude}&key=$GOOGLE_MAP_API_KEY&result_type=street_address&limit=1";
       final response = await get(Uri.parse(url));
@@ -155,5 +176,29 @@ class MapService {
       debugPrint(e.toString());
     }
     return point;
+  }
+
+  Future<List<PointLatLng>> getRoutePolyPoints(LatLng startLatLng, LatLng endLatLng) async {
+    try {
+      final uri = Uri.parse(
+          "$baseGoogleMapsUrl/directions/json?origin=${startLatLng.latitude},${startLatLng.longitude}&destination=${endLatLng.latitude},${endLatLng.longitude}&key=$GOOGLE_MAP_API_KEY&result_type=street_address&limit=1");
+      final response = await get(uri);
+
+      if (response.statusCode == 200) {
+        Map values = jsonDecode(response.body);
+        List<dynamic> routes = List.from(values['routes']);
+        if (routes.isEmpty) return [];
+
+        final data = Map<String, dynamic>.from(routes.first);
+
+        final points = data['overview_polyline']['points'];
+        final polylines = PolylinePoints().decodePolyline(points);
+
+        return polylines;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return [];
   }
 }

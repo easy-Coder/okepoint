@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:okepoint/data/models/emergency.dart';
 import 'package:okepoint/data/models/location/point.dart';
 import 'package:okepoint/data/models/user/contact.dart';
@@ -108,11 +109,26 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
     if (state == null || emergency == null) return;
 
     if (listening == false) {
-      await _sharedLocationRepo.shareLocation(
-        state!,
-        location: location.copyWith(id: LocationPoint.generatedId),
-        emergency: emergency,
-      );
+      bool hitMeterThreshold = true;
+
+      final sharedLocation = await _sharedLocationRepo.getSharedLocation(state!.currentSharedLocationId);
+
+      if (sharedLocation != null) {
+        final lastLatLng = sharedLocation.lastLocation.location;
+        final currentLatLng = LatLng(location.location.latitude, location.location.longitude);
+
+        hitMeterThreshold = _mapService.latLngMeters(currentLatLng, lastLL: lastLatLng);
+      }
+
+      if (hitMeterThreshold) {
+        location = await _mapService.getLocationFromLatLngAPI(location);
+
+        await _sharedLocationRepo.shareLocation(
+          state!,
+          location: location.copyWith(id: LocationPoint.generatedId),
+          emergency: emergency,
+        );
+      }
 
       return;
     }
@@ -122,13 +138,15 @@ class UserState extends StateNotifier<User?> with WidgetsBindingObserver {
       _cancelLocationTimer();
 
       _timer = Timer(const Duration(seconds: 30), () async {
-        await _sharedLocationRepo.shareLocation(
-          state!,
-          location: location.copyWith(id: LocationPoint.generatedId),
-          emergency: emergency,
-        );
-
-        debugPrint("UPDATE LOCATION ON DB");
+        try {
+          await _sharedLocationRepo.shareLocation(
+            state!,
+            location: location.copyWith(id: LocationPoint.generatedId),
+            emergency: emergency,
+          );
+        } catch (e) {
+          debugPrint("ERROR $e");
+        }
 
         _isActive = false;
         _cancelLocationTimer();

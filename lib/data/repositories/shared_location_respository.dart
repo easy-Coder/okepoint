@@ -36,6 +36,15 @@ class SharedLocationRepository {
         .snapshots();
   }
 
+  Future<SharedLocation?> getSharedLocation(String? id) async {
+    try {
+      final snapshot = await _sharedLocationFirestore.doc(id).get();
+      return SharedLocation.fromMap(snapshot.data() as Map<String, dynamic>);
+    } catch (_) {}
+
+    return null;
+  }
+
   Future<bool> shareLocation(User user, {required LocationPoint location, required Emergency emergency}) async {
     try {
       return FirebaseFirestore.instance.runTransaction((ts) async {
