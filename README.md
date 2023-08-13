@@ -20,7 +20,7 @@ This is a personal project however,cc & contributions are welcome. I will be pos
 
 ## Getting Started(Dev)
 
-To be able to contributor to this project, you should do this:
+To be able to contribute to this project, you should do this:
 
 - Install flutter, git and any code editor of your choice
 - Fork & star the repo
@@ -52,6 +52,6 @@ With Riverpod, we can create Providers that are scoped to different parts of our
 
 If you a Provider user, then Riverpod will be easy for you as it uses almost the same principles of accessing data from top level scopes anywhere in an app.
 
-### Navigation(GoRounter)
+### Navigation(GoRouter)
 
 To suitably tackle how web routing works, and as well as the mobile side of things. I decided to go with go_router because of it ability to sustainably tackle this problem with the navigation 2.0 api.
