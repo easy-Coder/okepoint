@@ -38,6 +38,7 @@ MODEL => CONTROLLER <=> VIEW
 
 ### Folder Structure
 
+```
 ├── lib/
 │ ├── data `data layer. models, repositories, service and states`
 │ ├── UI `ui layer. components, screens and theme`
@@ -45,6 +46,7 @@ MODEL => CONTROLLER <=> VIEW
 ├─├── utils `reusable extentions getters/methods, app validations etc`
 │ ├── configs `flavors & environment configs`
 ├── test/ `widget testable test codes & cases`
+```
 
 ### State Management(Riverpod):
 
